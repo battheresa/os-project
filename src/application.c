@@ -63,7 +63,7 @@ int main() {
             arrival_time++;
         }
         else if (strcmp(instruction, "exitPLS") == 0) {
-            printf("\n~~ BYE-BYE ~~\n");
+            printf("~~ BYE-BYE ~~\n\n");
             break;
         }
         
