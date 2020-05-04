@@ -16,7 +16,7 @@ void pleaseEnter(char str[]) {
 
 int main() {
     char command[CMD_LENGTH];
-    int index, duration;
+    int index, duration, arrival_time = 0;
     
     pleaseEnter(instruction);   // get instruction
     
@@ -37,10 +37,10 @@ int main() {
             //printf("duration from %s to %s = %d days\n", date1, date2, duration);
         }
         else if (strcmp(command, "addORDER") == 0) {
-            addORDER(instruction);
+            addORDER(instruction, arrival_time);
         }
         else if (strcmp(command, "addBATCH") == 0) {
-            addBATCH(instruction);
+            addBATCH(instruction, arrival_time);
         }
         else if (strcmp(command, "runPLS") == 0) {
             char algorithm[MIN_LENGTH];
@@ -62,10 +62,12 @@ int main() {
         index = indexOf(instruction, '|', 0, strlen(instruction)); // find index of pipe
         if (index != -1) {  // if pipe symbol exist, don't ask for new instruction
             substring(instruction, instruction, index + 2, strlen(instruction));    // adjust instruction
+            arrival_time++;
             continue;
         }
         
         pleaseEnter(instruction);   // get next instruction
+        arrival_time++;
     }
     
     return 0;
