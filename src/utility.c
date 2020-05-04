@@ -32,7 +32,7 @@ void substring(char source[], char dest[], int from, int to) {
 typedef struct Order{
     int quantity;
     int arrival_date;
-    Date due_date[SUB_LENGTH];
+    char due_date[SUB_LENGTH];
     char finish_date[SUB_LENGTH];
     char order_number[SUB_LENGTH];
     char product_name[SUB_LENGTH];
