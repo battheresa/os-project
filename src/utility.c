@@ -30,13 +30,13 @@ void substring(char source[], char dest[], int from, int to) {
 int totalOrders() {
     FILE *file;
     file = fopen(order_file, "r");    // open write file
-    char temp[SUB_LENGTH];
     
     if (file == NULL) {
         printf("Error in opening files\n");
         exit(1);
     }
     
+    char temp[SUB_LENGTH];
     int count = 0;
     
     while (fgets(temp, CMD_LENGTH, file))    // while not EOF
