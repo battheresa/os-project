@@ -18,7 +18,7 @@ int addPERIOD(char from[], char to[]) {
 
 // --------------------------------------------------------------------------------
 
-void addORDER(char data[]) {
+void addORDER(char data[], int time) {
     out_file = fopen(order_file, "a");  // open write file
     
     if (out_file == NULL) {
@@ -28,13 +28,13 @@ void addORDER(char data[]) {
     
     // parse data into seperate items if needed
     
-    fprintf(out_file, "%s\n", data);
+    fprintf(out_file, "%d %s\n", time, data);
     fclose(out_file);
 }
 
 // --------------------------------------------------------------------------------
 
-void addBATCH(char batch_file[]) {
+void addBATCH(char batch_file[], int time) {
     in_file = fopen(batch_file, "r");   // open read file
     
     if (in_file == NULL) {
@@ -44,7 +44,7 @@ void addBATCH(char batch_file[]) {
     
     while (fgets(temp, CMD_LENGTH, in_file)) {  // ask user command) != EOF) {
         temp[strlen(temp) - 1] = 0;     // remove new line from temp
-        addORDER(temp);
+        addORDER(temp, time);
     }
     
     fclose(in_file);
