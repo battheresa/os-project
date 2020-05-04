@@ -5,7 +5,7 @@
 
 int main(){
 
-    int read_from_file(order ordersread[]);
+    int read_from_file(Order ordersread[]);
 
     int no_plants = 3; //plants are also named into plant 0, plant 1, plant 2 etc
     int plants_orders[3] = {300,400,500}; //how many orders they can do in a day
@@ -14,18 +14,19 @@ int main(){
     char buf_out[100];
 
     //need to think of how to make this 
-    order ordersread[200];
+    Order *ordersread = malloc(total_order * sizeof(Order));
 
     //read orders from file
     total_order = read_from_file(ordersread);
 
     for (int i=0; i< total_order; i++){
-        printf("%d",ordersread[i].arrival_date);
-        printf("%s",ordersread[i].order_number);
-        printf("%s",ordersread[i].due_date);
-        printf("%d",ordersread[i].quantity);
-        printf("%s",ordersread[i].product_name);
+        printf("%d ",ordersread[i].arrival_date);
+        printf("%s ",ordersread[i].order_number);
+        printf("%s ",ordersread[i].due_date);
+        printf("%d ",ordersread[i].quantity);
+        printf("%s ",ordersread[i].product_name);
 
+        printf("\n");
     }
 
 
@@ -88,11 +89,11 @@ int main(){
 }
 
 /* read from the file*/
-int read_from_file(order ordersread[]){
+int read_from_file(Order ordersread[]){
 
     int total_order=0;
     char temp[40];
-    char *quant_temp;
+    char quant_temp[15];
 
     FILE *in_file = fopen("orders.txt", "r");   // open read file
     
@@ -106,14 +107,11 @@ int read_from_file(order ordersread[]){
         //split the file
 
         ordersread[total_order].arrival_date= temp[0]-48;
-        substring(temp, ordersread[total_order].order_number,2,5);
-        substring(temp, quant_temp, 7,15);
-        printf("%s", quant_temp);
-        
-    
-        substring(temp, quant_temp,19,24);
+        substring(temp, ordersread[total_order].order_number, 2, 5);
+        substring(temp, ordersread[total_order].due_date, 8, 10);    
+        substring(temp, quant_temp, 19, 24);
         ordersread[total_order].quantity=atoi(quant_temp);
-        substring(temp, ordersread[total_order].product_name,25,35);
+        substring(temp, ordersread[total_order].product_name,24,9);
 
         total_order++;
         
