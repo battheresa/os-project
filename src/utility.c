@@ -48,13 +48,13 @@ int totalOrders() {
 
 // --------------------------------------------------------------------------------
 
-struct Date {
+typedef struct Date {
     int day;
     int month;
     int year;
-};
+} Date;
 
-struct Date constructDate(char str[]) {
+Date constructDate(char str[]) {
     struct Date d;
     char temp[SUB_LENGTH];
     
@@ -74,7 +74,7 @@ struct Date constructDate(char str[]) {
 
 int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-bool isValidDate(struct Date d) {
+bool isValidDate(Date d) {
     // if leap year, Feberuary have 29 days
     if ((d.year % 4 == 0 && d.year % 100 != 0) || d.year % 400 == 0)
         days_in_month[1] = 29;
@@ -86,7 +86,7 @@ bool isValidDate(struct Date d) {
     return true;
 }
 
-int dateToDays(struct Date from, struct Date to) {
+int dateToDays(Date from, Date to) {
     int difference = 0;
     days_in_month[1] = 28;  // reset February to 28 days (isValidDate might have changed it)
     
