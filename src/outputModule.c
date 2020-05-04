@@ -11,8 +11,10 @@ void printREPORT(char filename[]) {
         exit(1);
     }
         
+    // fork 2 child
+    // for child call runPLS(algorithm)
     
-    fprintf(report_file, "%d %s\n", time, data);
+    //fprintf(report_file, "%d %s\n", time, data);
     
     
     fclose(report_file);

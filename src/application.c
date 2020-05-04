@@ -38,9 +38,11 @@ int main() {
         }
         else if (strcmp(command, "addORDER") == 0) {
             addORDER(instruction, arrival_time);
+            arrival_time++;
         }
         else if (strcmp(command, "addBATCH") == 0) {
             addBATCH(instruction, arrival_time);
+            arrival_time++;
         }
         else if (strcmp(command, "runPLS") == 0) {
             char algorithm[MIN_LENGTH];
@@ -49,6 +51,7 @@ int main() {
             substring(instruction, algorithm, 0, index);    // extract algorithm name
             
             printf("runPLS runs algorithm %s\n", algorithm);
+            arrival_time++;
         }
         else if (strcmp(command, "printREPORT") == 0) {
             char filename[SUB_LENGTH];
@@ -57,17 +60,16 @@ int main() {
             substring(instruction, filename, 0, index);     // extract report file name
             
             printf("printREPORT print report to %s\n", filename);
+            arrival_time++;
         }
         
         index = indexOf(instruction, '|', 0, strlen(instruction)); // find index of pipe
         if (index != -1) {  // if pipe symbol exist, don't ask for new instruction
             substring(instruction, instruction, index + 2, strlen(instruction));    // adjust instruction
-            arrival_time++;
             continue;
         }
         
         pleaseEnter(instruction);   // get next instruction
-        arrival_time++;
     }
     
     return 0;
