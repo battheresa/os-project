@@ -138,8 +138,8 @@ int dateToDays(Date from, Date to) {
 
 typedef struct order{
     int arrival_date;
-    char order_number[10];
-    char due_date;
+    char *order_number;
+    char *due_date;
     int quantity;
-    char product_name;
+    char *product_name;
 } order;
