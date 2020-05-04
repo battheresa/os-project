@@ -139,7 +139,7 @@ int dateToDays(Date from, Date to) {
 typedef struct order{
     int arrival_date;
     char order_number[10];
-    int due_date;
+    char due_date;
     int quantity;
     char product_name;
 } order;
