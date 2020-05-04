@@ -5,7 +5,7 @@
 int main(){
 
     int no_plants = 3; //plants are also named into plant 0, plant 1, plant 2 etc
-    int plants_orders = [300,400,500] //how many orders they can do in a day
+    int plants_orders[3] = {300,400,500}; //how many orders they can do in a day
     int total_order; //total orders
     char buf_in[100];
     char buf_out[100];
@@ -74,13 +74,12 @@ int main(){
 
     int day_now=0; //start the first day with 0
     struct order order_now; 
-    char order_name[10];
     char processed_order[no_plants][total_order];
     int plant_now;
     int count_assigned=0;
     int orders_unfinished;
     struct order queue[total_order];
-    int order_time;
+    char order_name[10];
 
     for (int i=0; i<total_order; i++){
 
@@ -140,7 +139,7 @@ void new_arrival(int day_now){
 }
 
 /*creates the queue*/
-void edd_queue(){
+void edd_queue(struct order order_now){
 }
 
 
