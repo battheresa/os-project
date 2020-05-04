@@ -4,6 +4,8 @@
 
 #include "utility.c"
 #include "inputModule.c"
+#include "scheduleModule.c"
+#include "outputModule.c"
 
 char instruction[CMD_LENGTH];
 

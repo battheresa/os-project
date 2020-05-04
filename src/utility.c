@@ -27,6 +27,17 @@ void substring(char source[], char dest[], int from, int to) {
     dest[to] = 0;
 }
 
+// --------------------------------------------------------------------------------
+
+typedef struct Order{
+    int quantity;
+    int arrival_date;
+    char due_date[SUB_LENGTH];
+    char finish_date[SUB_LENGTH];
+    char order_number[SUB_LENGTH];
+    char product_name[SUB_LENGTH];
+} Order;
+
 int totalOrders() {
     FILE *file;
     file = fopen(order_file, "r");    // open write file
@@ -135,11 +146,3 @@ int dateToDays(Date from, Date to) {
     
     return difference;
 }
-
-typedef struct order{
-    int arrival_date;
-    char *order_number;
-    char *due_date;
-    int quantity;
-    char *product_name;
-} order;
