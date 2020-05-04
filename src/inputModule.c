@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 FILE *in_file, *out_file;
-char temp[SUB_LENGTH], order_file[] = "orders.txt";
+char temp[SUB_LENGTH];
 
 // --------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ void addBATCH(char batch_file[], int time) {
         exit(1);
     }
     
-    while (fgets(temp, CMD_LENGTH, in_file)) {  // ask user command) != EOF) {
+    while (fgets(temp, CMD_LENGTH, in_file)) {  // while not EOF
         temp[strlen(temp) - 1] = 0;     // remove new line from temp
         addORDER(temp, time);
     }

@@ -7,6 +7,8 @@
 #define SUB_LENGTH 25
 #define CMD_LENGTH 80
 
+char order_file[] = "orders.txt";
+
 // --------------------------------------------------------------------------------
 
 int indexOf(char str[], char c, int from, int to) {
@@ -23,6 +25,24 @@ void substring(char source[], char dest[], int from, int to) {
     
     memcpy(dest, &source[from], to);
     dest[to] = 0;
+}
+
+int totalOrders() {
+    FILE *file;
+    file = fopen(order_file, "r");    // open write file
+    
+    if (file == NULL) {
+        printf("Error in opening files\n");
+        exit(1);
+    }
+    
+    int count = 0;
+    
+    while (fgets(temp, CMD_LENGTH, in_file))    // while not EOF
+        count++;
+    
+    fclose(file);
+    return count;
 }
 
 // --------------------------------------------------------------------------------
