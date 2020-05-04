@@ -18,11 +18,11 @@ int main() {
     char command[CMD_LENGTH];
     int index, duration, arrival_time = 0;
     
+    printf("\n~~ WELCOME TO PLS ~~\n");
     pleaseEnter(instruction);   // get instruction
     
-    while (strcmp(instruction, "exitPLS") != 0) {
-        index = indexOf(instruction, ' ', 0, strlen(instruction));
-        
+    while (true) {
+        index = indexOf(instruction, ' ', 0, strlen(instruction));  // find space in the instruction string
         substring(instruction, command, 0, index);  // extract command from instruction string
         substring(instruction, instruction, index + 1, strlen(instruction));    // adjust instruction string
         
@@ -61,6 +61,10 @@ int main() {
             
             printf("printREPORT print report to %s\n", filename);
             arrival_time++;
+        }
+        else if (strcmp(instruction, "exitPLS") == 0) {
+            printf("~~ BYE-BYE ~~\n\n");
+            break;
         }
         
         index = indexOf(instruction, '|', 0, strlen(instruction)); // find index of pipe

@@ -7,8 +7,8 @@ char temp[SUB_LENGTH];
 // --------------------------------------------------------------------------------
 
 int addPERIOD(char from[], char to[]) {
-    struct Date start = constructDate(from);
-    struct Date end = constructDate(to);
+    Date start = constructDate(from);
+    Date end = constructDate(to);
     
     if (!isValidDate(start) || !isValidDate(end))   // if invalid date, return -1
         return -1;
