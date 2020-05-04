@@ -55,7 +55,7 @@ typedef struct Date {
 } Date;
 
 Date constructDate(char str[]) {
-    struct Date d;
+    Date d;
     char temp[SUB_LENGTH];
     
     substring(str, temp, 0, 4);
