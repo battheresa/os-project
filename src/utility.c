@@ -82,6 +82,16 @@ Date constructDate(char str[]) {
     return d;
 }
 
+void dateToString(Date date, char str[]) {
+    char month[3];
+    sprintf(month, (date.month >= 10) ? "%d" : "0%d", date.month);
+    
+    char day[3];
+    sprintf(day, (date.day >= 10) ? "%d" : "0%d", date.day);
+    
+    sprintf(str, "%d-%s-%s", date.year, month, day);
+}
+
 // --------------------------------------------------------------------------------
 
 int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -146,4 +156,47 @@ int dateToDays(Date from, Date to) {
     }
     
     return difference;
+}
+
+Date daysToDate(Date base, int num) {
+    int diff_month = 0;
+    int diff_year = 0;
+    
+    int this_month = base.month - 1;
+    int this_year = base.year;
+    
+    days_in_month[1] = 28;
+    
+    if (num > days_in_month[this_month] - base.day) {
+        num -= days_in_month[this_month] - base.day;
+        diff_month++;
+        this_month++;
+        
+        while (num > days_in_month[this_month]) {
+            if ((this_year % 4 == 0 && this_year % 100 != 0) || this_year % 400 == 0)
+                days_in_month[1] = 29;
+            
+            num -= days_in_month[this_month];
+            diff_month++;
+            this_month++;
+            
+            if (diff_month >= 12) {     // difference between month reaches a year
+                diff_month = 0;
+                diff_year++;
+            }
+            
+            if (this_month >= 12) {     // loop back to January
+                days_in_month[1] = 28;
+                this_month = 0;
+                diff_year++;
+                this_year++;
+            }
+        }
+    }
+        
+    Date d;
+    d.day = base.day + num - 1;
+    d.month = base.month + diff_month;
+    d.year = base.year + diff_year;
+    return d;
 }

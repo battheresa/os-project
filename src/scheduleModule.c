@@ -13,7 +13,7 @@ char chosen[MIN_LENGTH];
 
 void runPLS(char algthm[], bool create_report) {
     if (!create_report) {
-        memcpy(chosen, algo, sizeof(algthm));
+        memcpy(chosen, algthm, 3);
         exit(0);
     }
     
