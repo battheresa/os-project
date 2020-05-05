@@ -3,17 +3,22 @@
 #include <string.h>
 #include "utility.c"
 
+Order plantA[1000];
+Order plantB[1000];
+Order plantC[1000];
+int total_order=0; //total orders
+
 int main(){
 
     int read_from_file(Order ordersread[]);
     void edd_queue(Order ordersread[], Order queue[], int* queue_length, int day_now, int total_order);
-    void remove_beginning(Order queue[], int* queue_length);
+    void remove_order(int idx, Order queue[], int* queue_length);
     void add_to_beginning(Order order_now, Order queue[], int* queue_length);
     int countfilled(int plantfilled[]);
+    void past_deadline(Order queue[], Order unfinished[], int* queue_length, int day_now);
 
 
     int no_plants = 3; //plants are also named into plant 0, plant 1, plant 2 etc
-    int total_order=0; //total orders
     char buf_in[100];
     char buf_out[100];
 
@@ -28,11 +33,8 @@ int main(){
     int total_processed=0;
     Order order_now; 
     Order queue[1000];
-    Order plantA[1000];
-    Order plantB[1000];
-    Order plantC[1000];
     Order unfinished[1000];
-    // int plantA_tot=0, plantB_tot=0, plantC_tot=0;
+
     int plant_now;
     int queue_length=0;
     int count_assigned=0;
@@ -58,13 +60,13 @@ int main(){
     //every new day, it restarts the queue
     while(true){
         //check if its past deadline or not
-        // past_deadline(queue, unfinished);
         edd_queue(ordersread, queue, &queue_length, day_now, total_order);
+        past_deadline(queue, unfinished, &queue_length, day_now);
 
         order_now= queue[0];
         total_processed++;
         orders_unfinished=order_now.quantity;
-        remove_beginning(queue, &queue_length);
+        remove_order(0, queue, &queue_length);
 
         int plant_filled[3]={0,0,0};
         for (int count_assigned=0; count_assigned<3; count_assigned++){
@@ -76,7 +78,7 @@ int main(){
                 }
                 else{
                     orders_unfinished=order_now.quantity;
-                    remove_beginning(queue, &queue_length);
+                    remove_order(0, queue, &queue_length);
                 }
                 total_processed++;
             }
@@ -139,7 +141,7 @@ int main(){
             add_to_beginning(order_now, queue, &queue_length);
         }
 
-        if (countfilled(plant_filled)<4){
+        if (countfilled(plant_filled)<=3){
             if (plant_filled[0]==0){
                 plantA[day_now]=null_order;
             }
@@ -296,11 +298,13 @@ int date_earlier(int first, int second, Date date_first, Date date_second){
 }
 
 /*remove from the beginning of the queue*/
-void remove_beginning(Order queue[], int* queue_length){
-    for (int i=0; i< (*queue_length)-1; i++){
+void remove_order(int idx, Order queue[], int* queue_length){
+
+    Order null_order={-1,0,"null",0,"null","null"};
+    for (int i=idx; i< (*queue_length)-1; i++){
         queue[i]=queue[i+1];
     }
-    queue[*(queue_length)-1].quantity=-1;
+    queue[*(queue_length)-1]=null_order;
     (*queue_length)--;
 }
 
@@ -325,6 +329,47 @@ int countfilled(int plantfilled[]){
     return count;
 }
 
-// void past_deadline(){
+void past_deadline(Order queue[], Order unfinished[], int* queue_length, int day_now){
 
-// }
+    Date start_period1={4,1,2020};
+    int queue_length_saved=(*queue_length);
+    int save1,save2;
+
+    for (int i=0; i< (*queue_length); i++){
+
+        if (i=0){save1=queue[0].quantity;}
+        if (i=1){save2=queue[1].quantity;}
+
+        Date now= constructDate(queue[i].due_date);
+        int difference=dateToDays(start_period1, now);
+        
+        if (difference<day_now){
+            remove_order(i,queue,queue_length);
+        }
+        // else if(difference==day_now){
+        //     if (i==0){
+        //         if (queue[0].quantity>1200){
+        //             remove_order(i,queue,queue_length);
+        //         }
+        //     }
+        //     if (i==1){
+        //         for (int i=0; i<){
+        //             if (save1>300 && queue[].quantity){
+        //                 w;
+        //             }
+        //         }
+                
+        //     }
+        //     if (i==2){
+        //         if (save1 save2)
+
+        //     }
+        //     else{
+        //         remove_order(i,queue,queue_length);
+        //     }
+
+        // }
+
+    }
+}
+
