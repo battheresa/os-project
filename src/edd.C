@@ -31,7 +31,8 @@ int main(){
     Order plantA[1000];
     Order plantB[1000];
     Order plantC[1000];
-    int plantA_tot=0, plantB_tot=0, plantC_tot=0;
+    Order unfinished[1000];
+    // int plantA_tot=0, plantB_tot=0, plantC_tot=0;
     int plant_now;
     int queue_length=0;
     int count_assigned=0;
@@ -45,7 +46,9 @@ int main(){
     int finish_date;
     char order_number[SUB_LENGTH];
     char product_name[SUB_LENGTH];
-    Order null_order={0,0,"",0,"",""};
+
+    //if null quantity is -1
+    Order null_order={-1,0,"",0,"",""};
 
     // for (int i=0; i<4; i++){
     //     edd_queue(ordersread, queue, &queue_length, day_now, total_order);
@@ -54,6 +57,8 @@ int main(){
     
     //every new day, it restarts the queue
     while(true){
+        //check if its past deadline or not
+        // past_deadline(queue, unfinished);
         edd_queue(ordersread, queue, &queue_length, day_now, total_order);
 
         order_now= queue[0];
@@ -66,7 +71,7 @@ int main(){
 
             if (orders_unfinished==0){
                 order_now= queue[0];
-                if (order_now.quantity==0){
+                if (order_now.quantity==-1){
                     break;
                 }
                 else{
@@ -76,66 +81,56 @@ int main(){
                 total_processed++;
             }
             
-            //assigning the order to the different plants
-            // printf("%d\n",countfilled(plant_filled));
-            
-            printf("%s %d ",order_now.order_number,orders_unfinished);
+            //assigning the order to the different plants            
+            // printf("%s %d ",order_now.order_number,orders_unfinished);
             if ((countfilled(plant_filled)>=2 || orders_unfinished<=300)&&(plant_filled[0]==0)){
 
-                plantA[plantA_tot]=order_now;
-                plantA[plantA_tot].finish_date=day_now;
+                plantA[day_now]=order_now;
+                plantA[day_now].finish_date=day_now;
 
                 if (orders_unfinished<=300){
-                    plantA[plantA_tot].quantity=orders_unfinished;
+                    plantA[day_now].quantity=orders_unfinished;
                     orders_unfinished=0;
                 }
                 else{
-                    plantA[plantA_tot].quantity=300;
+                    plantA[day_now].quantity=300;
                     orders_unfinished-=300;
                 }
                 
-                plantA_tot++;
                 plant_filled[0]=-1;
-                printf("300\n");
                 
             }
             else if ((countfilled(plant_filled)>=1 || orders_unfinished<=400)&&(plant_filled[1]==0 )){
-                plantB[plantB_tot]=order_now;
-                plantB[plantB_tot].finish_date=day_now;
+                plantB[day_now]=order_now;
+                plantB[day_now].finish_date=day_now;
 
                 if (orders_unfinished<=400){
-                    plantB[plantB_tot].quantity=orders_unfinished;
+                    plantB[day_now].quantity=orders_unfinished;
                     orders_unfinished=0;
                 }
                 else{
-                    plantB[plantB_tot].quantity=400;
+                    plantB[day_now].quantity=400;
                     orders_unfinished-=400;
                 }
-                plantB_tot++;
                 plant_filled[1]=-1;
-                printf("400\n");
 
             }
             else{
-                plantC[plantC_tot]=order_now;
-                plantC[plantC_tot].finish_date=day_now;
+                plantC[day_now]=order_now;
+                plantC[day_now].finish_date=day_now;
 
                 if (orders_unfinished<=500){
-                    plantC[plantC_tot].quantity=orders_unfinished;
+                    plantC[day_now].quantity=orders_unfinished;
                     orders_unfinished=0;
                 }
                 else{
-                    plantC[plantC_tot].quantity=500;
+                    plantC[day_now].quantity=500;
                     orders_unfinished-=500;
                 }
-                plantC_tot++;
                 plant_filled[2]=-1;
-                printf("500\n");
 
             }
             
-
-
         }
 
         if (orders_unfinished>0){
@@ -143,6 +138,19 @@ int main(){
             total_processed--;
             add_to_beginning(order_now, queue, &queue_length);
         }
+
+        if (countfilled(plant_filled)<4){
+            if (plant_filled[0]==0){
+                plantA[day_now]=null_order;
+            }
+            if (plant_filled[1]==0){
+                plantB[day_now]=null_order;
+            }
+            if (plant_filled[2]==0){
+                plantC[day_now]=null_order;
+            }
+        }
+        
 
         if (total_processed==total_order){
             break;
@@ -153,7 +161,7 @@ int main(){
 
     }
     printf("plant A queue:\n");
-    for (int i=0;i<plantA_tot;i++){
+    for (int i=0;i<day_now;i++){
         printf("%d ", plantA[i].arrival_date);
         printf("%s ", plantA[i].due_date);
         printf("%s ", plantA[i].order_number);
@@ -165,7 +173,7 @@ int main(){
     printf("--------------\n");
 
     printf("plant B queue:\n");
-    for (int i=0;i<plantB_tot;i++){
+    for (int i=0;i<day_now;i++){
         printf("%d ", plantB[i].arrival_date);
         printf("%s ", plantB[i].due_date);
         printf("%s ", plantB[i].order_number);
@@ -177,7 +185,7 @@ int main(){
     printf("----------\n");
 
     printf("plant C queue:\n");
-    for (int i=0;i<plantC_tot;i++){
+    for (int i=0;i<day_now;i++){
         printf("%d ", plantC[i].arrival_date);
         printf("%s ", plantC[i].due_date);
         printf("%s ", plantC[i].order_number);
@@ -266,16 +274,6 @@ void edd_queue(Order ordersread[], Order queue[], int* queue_length, int day_now
                 (*queue_length)++;
 
             }
-
-            // for (int i=0;i<*queue_length;i++){
-            //     printf("%d ", queue[i].arrival_date);
-            //     printf("%s ", queue[i].due_date);
-            //     printf("%s ", queue[i].order_number);
-            //     printf("%d ", queue[i].quantity);
-            //     printf("%s ", queue[i].product_name);
-            //     printf("\n");
-            // }
-            // printf("\n");
         }
     }
     
@@ -302,7 +300,7 @@ void remove_beginning(Order queue[], int* queue_length){
     for (int i=0; i< (*queue_length)-1; i++){
         queue[i]=queue[i+1];
     }
-    queue[*(queue_length)-1].quantity=0;
+    queue[*(queue_length)-1].quantity=-1;
     (*queue_length)--;
 }
 
@@ -326,3 +324,7 @@ int countfilled(int plantfilled[]){
     }
     return count;
 }
+
+// void past_deadline(){
+
+// }
