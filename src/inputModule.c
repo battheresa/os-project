@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-FILE *in_file, *out_file;
+FILE *in_file, *out_file, *invalid_file;
 char temp[SUB_LENGTH];
 
 // --------------------------------------------------------------------------------
@@ -22,6 +22,7 @@ int addPERIOD(char from[], char to[]) {
 
 void addORDER(char data[], int time) {
     out_file = fopen(order_file, "a");  // open write file
+    invalid_file = fopen("invalid_orders.txt", "a");  // open write file
     
     if (out_file == NULL) {
         printf("Error in opening files\n");
@@ -29,9 +30,22 @@ void addORDER(char data[], int time) {
     }
     
     // parse data into seperate items if needed
+    char temp[SUB_LENGTH];
+    int index = indexOf(data, ' ', 0, strlen(data));
+    substring(data, temp, index + 1, index + 11);
     
-    fprintf(out_file, "%d %s\n", time, data);
+    Date date = constructDate(temp);
+    if (end_period.year < date.year || end_period.month < date.month || end_period.day < date.day) {
+        printf("invalid order\n");
+        fprintf(invalid_file, "%s\n", data);
+    }
+    else {
+        printf("valid order\n");
+        fprintf(out_file, "%d %s\n", time, data);
+    }
+    
     fclose(out_file);
+    fclose(invalid_file);
 }
 
 // --------------------------------------------------------------------------------
