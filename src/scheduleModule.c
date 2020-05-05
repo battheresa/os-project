@@ -5,28 +5,37 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include "edd.C"
+//#include "sjf2.c" // have main
+
 #define READ 0
 #define WRITE 1
 #define ALGORITHM 2
 
-char chosen[MIN_LENGTH];
+void orderToString(char plant, Order ord, char str[]) {
+    char arrival[SUB_LENGTH];
+    dateToString(daysToDate(ord.arrival_date), arrival);
+    
+    sprintf(str, "%c %s %s %d %s %d %s", plant, ord.order_number, ord.product_name, ord.quantity, arrival, ord.finish_date, ord.due_date);
+}
 
-void runPLS(char algthm[], bool create_report) {
-    if (!create_report) {
-        memcpy(chosen, algthm, 3);
-        exit(0);
+void runPLS(char algthm[]) {
+    int total = totalOrders();
+    
+    char *plant_X[total];
+    char *plant_Y[total];
+    char *plant_Z[total];
+    char *rejected[total];
+    
+    for (int i = 0; i < total; i++) {
+        plant_X[i] = malloc(sizeof(char) * ORD_LENGTH);
+        plant_Y[i] = malloc(sizeof(char) * ORD_LENGTH);
+        plant_Z[i] = malloc(sizeof(char) * ORD_LENGTH);
+        rejected[i] = malloc(sizeof(char) * ORD_LENGTH);
     }
     
-    char *plant_X[ORD_LENGTH];
-    char *plant_Y[ORD_LENGTH];
-    char *plant_Z[ORD_LENGTH];
-    char *rejected[ORD_LENGTH];
-    
-    // malloc
-    
-    int fd[2];
-    int fd_P[ALGORITHM][2];    // pipe from parent to child
-    int fd_C[ALGORITHM][2];    // pipe from child to parent
+    int fd_P[ALGORITHM][2];     // pipe from parent to child (another program)
+    int fd_C[ALGORITHM][2];     // pipe from child to parent
     
     int pid, cid;
     
@@ -59,34 +68,37 @@ void runPLS(char algthm[], bool create_report) {
             if (i == 0) {
                 // call schedule EDD
                 // save to array of string
+                // write string to parent
             }
             else {
                 // call schedule SJF
-                // save to array of string
+                // save to array of Order
+                // write string to parent
             }
             
-            // write all array of string to parent
+            // write 'done' to parent
+            
+            // exec format report
+            // analyze module write raw data file
             
             close(fd_P[i][READ]);   // close read from parent
             close(fd_C[i][WRITE]);  // close wtire from child
+            exit(0);
         }
         // parent process
         else if (pid > 0) {
             close(fd_P[i][READ]);   // close read from parent
             close(fd_C[i][WRITE]);  // close wtire from child
+            
+            // read string order from child
+            
+            // read 'done' from child
+            // write string to child (another program)
+            
+            close(fd_P[i][WRITE]);  // close write from parent
+            close(fd_C[i][READ]);   // close read from child
+            cid = wait(NULL);
+            printf("Parent: child %d is collected\n", cid);
         }
-    }
-    
-    // read from EDD
-    // read from SJF
-    
-    // write to outputModule.c as single huge string (piping between 2 files)
-    
-    // clsoe pipes and collect child
-    for (int i = 0; i < ALGORITHM; i++) {
-        close(fd_P[i][WRITE]);  // close write from parent
-        close(fd_C[i][READ]);   // close read from child
-        cid = wait(NULL);
-        printf("Parent: child %d is collected\n", cid);
     }
 }
