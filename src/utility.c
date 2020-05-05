@@ -33,7 +33,7 @@ typedef struct Order{
     int quantity;
     int arrival_date;
     char due_date[SUB_LENGTH];
-    char finish_date[SUB_LENGTH];
+    int finish_date;
     char order_number[SUB_LENGTH];
     char product_name[SUB_LENGTH];
 } Order;
