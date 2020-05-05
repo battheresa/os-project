@@ -94,7 +94,13 @@ void dateToString(Date date, char str[]) {
 
 // --------------------------------------------------------------------------------
 
+Date start_period, end_period;
 int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+void setPeriod(Date start, Date end) {
+    start_period = start;
+    end_period = end;
+}
 
 bool isValidDate(Date d) {
     // if leap year, Feberuary have 29 days
@@ -107,6 +113,8 @@ bool isValidDate(Date d) {
     
     return true;
 }
+
+// --------------------------------------------------------------------------------
 
 int dateToDays(Date from, Date to) {
     int difference = 0;
@@ -158,17 +166,19 @@ int dateToDays(Date from, Date to) {
     return difference;
 }
 
-Date daysToDate(Date base, int num) {
+// --------------------------------------------------------------------------------
+
+Date daysToDate(int num) {
     int diff_month = 0;
     int diff_year = 0;
     
-    int this_month = base.month - 1;
-    int this_year = base.year;
+    int this_month = start_period.month - 1;
+    int this_year = start_period.year;
     
     days_in_month[1] = 28;
     
-    if (num > days_in_month[this_month] - base.day) {
-        num -= days_in_month[this_month] - base.day;
+    if (num > days_in_month[this_month] - start_period.day) {
+        num -= days_in_month[this_month] - start_period.day;
         diff_month++;
         this_month++;
         
@@ -195,8 +205,8 @@ Date daysToDate(Date base, int num) {
     }
         
     Date d;
-    d.day = base.day + num - 1;
-    d.month = base.month + diff_month;
-    d.year = base.year + diff_year;
+    d.day = (diff_month > 0 || diff_year > 0) ? start_period.day + num - 1 : start_period.day + num;
+    d.month = start_period.month + diff_month;
+    d.year = start_period.year + diff_year;
     return d;
 }
