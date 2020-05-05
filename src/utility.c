@@ -6,6 +6,7 @@
 #define MIN_LENGTH 10
 #define SUB_LENGTH 25
 #define CMD_LENGTH 80
+#define ORD_LENGTH 200
 
 char order_file[] = "orders.txt";
 
