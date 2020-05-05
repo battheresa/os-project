@@ -13,6 +13,8 @@ int addPERIOD(char from[], char to[]) {
     if (!isValidDate(start) || !isValidDate(end))   // if invalid date, return -1
         return -1;
     
+    setPeriod(start, end);
+    
     return dateToDays(start, end);
 }
 

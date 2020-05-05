@@ -6,6 +6,7 @@
 #define MIN_LENGTH 10
 #define SUB_LENGTH 25
 #define CMD_LENGTH 80
+#define ORD_LENGTH 200
 
 char order_file[] = "orders.txt";
 
@@ -81,9 +82,25 @@ Date constructDate(char str[]) {
     return d;
 }
 
+void dateToString(Date date, char str[]) {
+    char month[3];
+    sprintf(month, (date.month >= 10) ? "%d" : "0%d", date.month);
+    
+    char day[3];
+    sprintf(day, (date.day >= 10) ? "%d" : "0%d", date.day);
+    
+    sprintf(str, "%d-%s-%s", date.year, month, day);
+}
+
 // --------------------------------------------------------------------------------
 
+Date start_period, end_period;
 int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+void setPeriod(Date start, Date end) {
+    start_period = start;
+    end_period = end;
+}
 
 bool isValidDate(Date d) {
     // if leap year, Feberuary have 29 days
@@ -96,6 +113,8 @@ bool isValidDate(Date d) {
     
     return true;
 }
+
+// --------------------------------------------------------------------------------
 
 int dateToDays(Date from, Date to) {
     int difference = 0;
@@ -145,4 +164,49 @@ int dateToDays(Date from, Date to) {
     }
     
     return difference;
+}
+
+// --------------------------------------------------------------------------------
+
+Date daysToDate(int num) {
+    int diff_month = 0;
+    int diff_year = 0;
+    
+    int this_month = start_period.month - 1;
+    int this_year = start_period.year;
+    
+    days_in_month[1] = 28;
+    
+    if (num > days_in_month[this_month] - start_period.day) {
+        num -= days_in_month[this_month] - start_period.day;
+        diff_month++;
+        this_month++;
+        
+        while (num > days_in_month[this_month]) {
+            if ((this_year % 4 == 0 && this_year % 100 != 0) || this_year % 400 == 0)
+                days_in_month[1] = 29;
+            
+            num -= days_in_month[this_month];
+            diff_month++;
+            this_month++;
+            
+            if (diff_month >= 12) {     // difference between month reaches a year
+                diff_month = 0;
+                diff_year++;
+            }
+            
+            if (this_month >= 12) {     // loop back to January
+                days_in_month[1] = 28;
+                this_month = 0;
+                diff_year++;
+                this_year++;
+            }
+        }
+    }
+        
+    Date d;
+    d.day = (diff_month > 0 || diff_year > 0) ? start_period.day + num - 1 : start_period.day + num;
+    d.month = start_period.month + diff_month;
+    d.year = start_period.year + diff_year;
+    return d;
 }
