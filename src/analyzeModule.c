@@ -1,12 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
-FILE *report_file;
+#include "utility.c"
+
+FILE *raw_file;
+char buf_read[ORD_LENGTH];
+char buf_write[ORD_LENGTH];
 
 int main(int argc, char *arvg[]) {
-    char line[ORD_LENGTH];
+    char algorithm[] = argv[1];
+    int total = atoi(argv[2]);
+    
+    char *data[ORD_LENGTH];
+    
+    for (int i = 0; i < total * 4; i++)
+        data[i] = malloc(sizeof(char) * ORD_LENGTH);
+    
+    for (int i = 0; true; i++) {
+        fgets(buf_read, ORD_LENGTH, stdin)  // read inputs
+        buf_read[strlen(buf_read) - 1] = 0; // add EOF
+    }
     
     int fd_P[ALGORITHM][2];     // pipe from parent to child (another program)
     int fd_C[ALGORITHM][2];     // pipe from child to parent
@@ -39,26 +56,14 @@ int main(int argc, char *arvg[]) {
             close(fd_P[i][WRITE]);  // close write from parent
             close(fd_C[i][READ]);   // close read from child
             
-            if (i == 0) {   // format schedule as raw data
-                while (fgets(line, ORD_LENGTH, stdin) != NULL) {   // read until EOF
-                    // extract schedule part
-                    // format schedule into huge string
-                    // write back to parent
-                }
+            if (i == 0) {   // write to txt file with some titles
+                
             }
-            else if (i == 1) {  // arrange accepted and rejected request as raw data
-                while (fgets(line, ORD_LENGTH, stdin) != NULL) {   // read until EOF
-                    // extract analysis part
-                    // format analysis into huge string
-                    // write back to parent
-                }
+            else if (i == 1) {  // calculate total accepted and rejected orders
+                
             }
-            else {  // calculate performance
-                while (fgets(line, ORD_LENGTH, stdin) != NULL) {   // read until EOF
-                    // extract performance part
-                    // format performance into huge string
-                    // write back to parent
-                }
+            else {  // calculate performance 
+                    
             }
             
             close(fd_P[i][READ]);   // close read from parent
@@ -69,19 +74,14 @@ int main(int argc, char *arvg[]) {
         else if (pid > 0) {
             close(fd_P[i][READ]);   // close read from parent
             close(fd_C[i][WRITE]);  // close wtire from child
+            
+            // do stuff
+            
+            close(fd_P[i][WRITE]);  // close write from parent
+            close(fd_C[i][READ]);   // close read from child
+            cid = wait(NULL);
+            printf("Parent: child %d is collected\n", cid);
         }
-    }
-    
-    
-    // parent read from each child
-    // write to txt as raw data
-    
-    
-    for (int i = 0; i < ALGORITHM; i++) {
-        close(fd_P[i][WRITE]);  // close write from parent
-        close(fd_C[i][READ]);   // close read from child
-        cid = wait(NULL);
-        printf("Parent: child %d is collected\n", cid);
     }
     
     return 0;
