@@ -8,7 +8,8 @@
 #define CMD_LENGTH 80
 #define ORD_LENGTH 200
 
-char order_file[] = "orders.txt";
+char order_file[] = "_resources/orders.txt";
+char invalid_file[] = "_resources/invalids.txt";
 
 // --------------------------------------------------------------------------------
 

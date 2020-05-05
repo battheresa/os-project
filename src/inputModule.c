@@ -22,9 +22,9 @@ int addPERIOD(char from[], char to[]) {
 
 void addORDER(char data[], int time) {
     out_file = fopen(order_file, "a");  // open write file
-    invalid_file = fopen("invalidOrders.txt", "a");  // open write file
+    error_file = fopen(invalid_file, "a");  // open write file
     
-    if (out_file == NULL) {
+    if (out_file == NULL || error_file == NULL) {
         printf("Error in opening files\n");
         exit(1);
     }
@@ -37,7 +37,7 @@ void addORDER(char data[], int time) {
     Date date = constructDate(temp);
     if (end_period.year < date.year || end_period.month < date.month || end_period.day < date.day) {
         //printf("invalid order\n");
-        fprintf(invalid_file, "%s\n", data);
+        fprintf(error_file, "%s\n", data);
     }
     else {
         //printf("valid order\n");
@@ -45,7 +45,7 @@ void addORDER(char data[], int time) {
     }
     
     fclose(out_file);
-    fclose(invalid_file);
+    fclose(error_file);
 }
 
 // --------------------------------------------------------------------------------

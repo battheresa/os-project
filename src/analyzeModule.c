@@ -22,7 +22,15 @@ int main(int argc, char *arvg[]) {
     
     for (int i = 0; true; i++) {
         fgets(buf_read, ORD_LENGTH, stdin)  // read inputs
+        
+        if (buf_read == NULL)
+            break;
+        
         buf_read[strlen(buf_read) - 1] = 0; // add EOF
+        printf("buf_read: %s\n", buf_read);
+        
+        memcpy(data[i], &buf_read[0], strlen(buf_read));    // save to data string array
+        printf("data[%d]: %s\n", i, data[i]);
     }
     
     int fd_P[ALGORITHM][2];     // pipe from parent to child (another program)
