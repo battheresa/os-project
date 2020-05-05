@@ -6,6 +6,8 @@
 int main(){
 
     int read_from_file(Order ordersread[]);
+    void edd_queue(Order ordersread[], Order queue[], int* queue_length, int day_now, int total_order);
+
 
     int no_plants = 3; //plants are also named into plant 0, plant 1, plant 2 etc
     int plants_orders[3] = {300,400,500}; //how many orders they can do in a day
@@ -14,23 +16,36 @@ int main(){
     char buf_out[100];
 
     //need to think of how to make this 
-    Order *ordersread = malloc(total_order * sizeof(Order));
+    // Order *ordersread = malloc(total_order * sizeof(Order));
+    Order ordersread[1000];
 
     //read orders from file
     total_order = read_from_file(ordersread);
 
-    for (int i=0; i< total_order; i++){
-        printf("%d ",ordersread[i].arrival_date);
-        printf("%s ",ordersread[i].order_number);
-        printf("%s ",ordersread[i].due_date);
-        printf("%d ",ordersread[i].quantity);
-        printf("%s ",ordersread[i].product_name);
+    // for (int i=0; i< total_order; i++){
+    //     printf("%d ",ordersread[i].arrival_date);
+    //     printf("%s ",ordersread[i].order_number);
+    //     printf("%s ",ordersread[i].due_date);
+    //     printf("%d ",ordersread[i].quantity);
+    //     printf("%s ",ordersread[i].product_name);
 
-        printf("\n");
+    //     printf("\n");
+    // }
+
+    int day_now=0; //start the first day with 0
+    Order order_now; 
+    int queue_length=0;
+    int plant_now;
+    int count_assigned=0;
+    int orders_unfinished;
+    Order queue[1000];
+    char order_name[10];
+
+    for (int i=0; i<4; i++){
+        edd_queue(ordersread, queue, &queue_length, day_now, total_order);
+        day_now++;
     }
 
-
-    // int total_days=0; //how many days have passed
     // char *plant_order[endtime_of_the_plants][total_order];
 
     // //write all the orders the parent 
@@ -119,6 +134,81 @@ int read_from_file(Order ordersread[]){
     fclose(in_file);
     return total_order;
 
+}
+
+
+/*creates the queue*/
+void edd_queue(Order ordersread[], Order queue[], int* queue_length, int day_now, int total_order){
+    
+    int date_earlier(int first, int second, Date date_first, Date date_second);
+
+    Date in_queue;
+    Date to_queue;
+
+    // printf("queue length: %d\n",*queue_length);
+    for (int i= 0; i< total_order; i++){
+        int placed=*queue_length;
+
+        if (ordersread[i].arrival_date==day_now){
+            printf("queue length: %d\n",*queue_length);
+
+            to_queue=constructDate(ordersread[i].due_date);
+            
+            // printf("%s \n", ordersread[i].order_number);
+            if (queue_length==0){
+                queue[*queue_length]=ordersread[i];
+                (*queue_length)++;
+            }
+
+            else{
+                for (int j=0; j<*queue_length; j++){
+                    in_queue= constructDate(queue[j].due_date);
+                    
+                    //if the date is earlier
+                    if (date_earlier(i,j, to_queue, in_queue)==i){
+                        placed=j;
+                        break;
+                    }
+                }
+
+                //move all the queue to the back and give space for the earliest
+                for (int k=(*queue_length)-1;k>=placed; k--){
+                    printf("hiiiiii %s \n", queue[k].order_number);
+                    queue[k+1]=queue[k];
+                }
+                queue[placed]=ordersread[i];
+                (*queue_length)++;
+
+            }
+
+            for (int i=0;i<*queue_length;i++){
+                    printf("%d ", queue[i].arrival_date);
+                    printf("%s ", queue[i].due_date);
+                    printf("%s ", queue[i].order_number);
+                    printf("%d ", queue[i].quantity);
+                    printf("%s ", queue[i].product_name);
+                    printf("\n");
+                }
+                printf("\n");
+        }
+    }
+    
+}
+
+//note that this compares with 1 jan 2020
+int date_earlier(int first, int second, Date date_first, Date date_second){
+    //compare it to 1 january 2000? 
+    Date now={01,01,2020};
+    int firstno=dateToDays(now,date_first);
+    int secondno=dateToDays(now,date_second);
+    
+    if (firstno<=secondno){
+        return first;
+    }
+   
+    else{
+       return second;
+    }
 }
 
 // /* what is the number of products in this order*/
