@@ -17,6 +17,9 @@ char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
 
 void orderToString(char plant, Order ord, char str[]) {
+    if (ord.quantity == -1)
+        sprintf(str, "%c NA");
+    
     char arrival[SUB_LENGTH];
     dateToString(daysToDate(ord.arrival_date), arrival);
     
@@ -81,6 +84,7 @@ void runPLS(char algthm[]) {
             convertAndWrite(plant_X, 'X', fd_C[i][WRITE]);      // write plant_X schedule to plant
             convertAndWrite(plant_Y, 'Y', fd_C[i][WRITE]);      // write plant_Y schedule to plant
             convertAndWrite(plant_Z, 'Z', fd_C[i][WRITE]);      // write plant_Z schedule to plant
+            convertAndWrite(finished, 'A', fd_C[i][WRITE]);   // write rejected request to parent
             convertAndWrite(unfinished, 'R', fd_C[i][WRITE]);   // write rejected request to parent
             */
             

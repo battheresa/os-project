@@ -43,8 +43,8 @@ void printREPORT(char filename[]) {
 Plant X (300 per day)
 [period range]
 
-Date            Product Name        Order Number        Quantity        Due Date
-YYYY-MM-DD      Product_A           P_XXX               XXXX            YYYY-MM-DD
+Date            Order Number        Product Name        Quantity        Due Date
+YYYY-MM-DD      P_XXX               Product_A           XXXX            YYYY-MM-DD
 
 ------------------------------------------------------------------------------------------ (90)
 
@@ -63,13 +63,13 @@ Algorithm: EDD (Earliest Due Date)
  
 Order Accepted (total of xxx orders):
 
-Product Name        Quantity        Start           Finish          Duration        Plant
-P_XXX               XXXX            YYYY-MM-DD      YYYY-MM-DD      XXXX            XXXX
+Product Name        Quantity        Start           Finish          Duration
+P_XXX               XXXX            YYYY-MM-DD      YYYY-MM-DD      XXXX
 
 Order Rejected (total of xxx orders):
   
-Product Name        Order Number    Quantity        Due Date
-P_XXX               P_XXX           XXXX            YYYY-MM-DD
+Order Number        Product Name        Quantity        Due Date
+P_XXX               Product_A           XXXX            YYYY-MM-DD
   
 ------------------------------------------------------------------------------------------ (90)
   
@@ -87,7 +87,7 @@ Plant_X:    Number of days in use               XXX days
             Number of products produced         XXX (in total)
             Utilization of the plant            XX.XX %
 
-Overal utilization                              XX.XX %
+Overall utilization                             XX.XX %
  
 ------------------------------------------------------------------------------------------ (90)
 
