@@ -8,8 +8,8 @@
 #define CMD_LENGTH 80
 #define ORD_LENGTH 200
 
-char order_file[] = "_resources/orders.txt";
-char invalid_file[] = "_resources/invalids.txt";
+char order_path[] = "_resources/orders.txt";
+char invalid_path[] = "_resources/invalids.txt";
 
 // --------------------------------------------------------------------------------
 
@@ -18,15 +18,26 @@ int indexOf(char str[], char c, int from, int to) {
         if (str[i] == c)
             return i;
     
-    return -1;
+    return -10;
 }
 
-void substring(char source[], char dest[], int from, int to) {
-    if (to == -1)
+void substring(char source[], char dest[], int from, int to) {    
+    if (to < 0)
         to = strlen(source);
     
     memcpy(dest, &source[from], to);
     dest[to] = 0;
+}
+
+int split(char source[], int dest[], char dex) {
+    int i = 0, index = 0;
+        
+    while (index >= 0) {
+        index = indexOf(source, dex, index, strlen(source));
+        dest[i++] = index++;
+    }
+    
+    return i;
 }
 
 // --------------------------------------------------------------------------------
@@ -42,7 +53,7 @@ typedef struct Order{
 
 int totalOrders() {
     FILE *file;
-    file = fopen(order_file, "r");    // open write file
+    file = fopen(order_path, "r");    // open write file
     
     if (file == NULL) {
         printf("Error in opening files\n");
