@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-char path[] = "_reports";
 FILE *report_file;
 
 void formatSchedule(char data[], char formated[]) {
@@ -22,8 +21,10 @@ void formatPerformance(char data[], char formated[]) {
 }
 
 void printREPORT(char filename[]) {
-    strcat(path, filename);
-    report_file = fopen(path, "w");    // open write file
+    char report_path[SUB_LENGTH] = "_reports/";
+    strcat(report_path, filename);
+    
+    report_file = fopen(report_path, "w");    // open write file
     
     if (report_file == NULL) {
         printf("Error in opening files\n");
