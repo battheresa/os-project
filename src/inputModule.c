@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 FILE *in_file, *out_file, *invalid_file;
 char temp[SUB_LENGTH];
@@ -35,14 +36,10 @@ void addORDER(char data[], int time) {
     substring(data, temp, index + 1, index + 11);
     
     Date date = constructDate(temp);
-    if (end_period.year < date.year || end_period.month < date.month) {
-        //printf("invalid order\n");
+    if (isBefore(start_period, date, true))
         fprintf(invalid_file, "%s\n", data);
-    }
-    else {
-        //printf("valid order\n");
+    else
         fprintf(out_file, "%d %s\n", time, data);
-    }
     
     fclose(out_file);
     fclose(invalid_file);
