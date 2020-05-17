@@ -12,7 +12,7 @@ int plants_limit[] = {300, 400, 500};
 char plants_code[] = {'X', 'Y', 'Z'};
 
 int total_order = 0;    // total orders
-int orders_unfinished;
+int orders_unfinished = 0;
 
 // --------------------------------------------------------------------------------
 
@@ -34,22 +34,22 @@ Order null_order = {-1, 0, "null", 0, "null", "null"};
 
 // --------------------------------------------------------------------------------
 
-// add order to beginning of the queue
-int addOrder(Order order_now, Order queue[], int queue_length) {
-    for (int i = queue_length - 1; i >= 0; i--)
-        queue[i + 1] = queue[i];
+// add order at index
+int addOrder(int index, Order order_now, Order queue[], int queue_length) {
+    for (int i = queue_length; i > index; i--)
+        queue[i] = queue[i - 1];
     
-    queue[0] = order_now;
-    return queue_length++;
+    queue[index] = order_now;
+    return queue_length + 1;
 }
 
-// remove from the beginning of the queue
-int removeOrder(int idx, Order queue[], int queue_length) {
-    for (int i = idx; i < queue_length - 1; i++)
+// remove order at index
+int removeOrder(int index, Order queue[], int queue_length) {
+    for (int i = index; i < queue_length - 1; i++)
         queue[i] = queue[i + 1];
     
     queue[queue_length - 1] = null_order;
-    return queue_length--;
+    return queue_length - 1;
 }
 
 // --------------------------------------------------------------------------------
@@ -112,50 +112,16 @@ void printSchedule(char plant, int num, Order schedule[]) {
 // --------------------------------------------------------------------------------
 
 int overdue(Order queue[], Order unfinished[], int queue_length, int day_now) {
+    Date due_now, today = daysToDate(day_now);
+    
     for (int i = 0; i < queue_length; i++) {
+        due_now = constructDate(queue[i].due_date);
         
-    }
-    
-    
-    
-    /*
-    Date now = {4, 1, 2020};  // use "setPeriod(start_date, end_date)" for testing
-    int queue_length_saved = queue_length;
-    int save1, save2;
-
-    for (int i = 0; i < queue_length; i++) {
-        if (i == 0)
-            save1 = queue[0].quantity;
-        else if (i == 1)
-            save2 = queue[1].quantity;
-
-        Date due_now = constructDate(queue[i].due_date);
-        int difference = dateToDays(now, due_now);
-        
-        if (difference < day_now) {
-            removeOrder(i, queue, due_now);
-        }
-        else if (difference == day_now) {
-            if (i == 0) {
-                if (queue[0].quantity > 1200)
-                    removeOrder(i,queue, queue_length);
-            }
-            else if (i == 1) {
-                for (int i = 0; i < ) {
-                    if (save1 > 300 && queue[].quantity) {
-                        // do something
-                    }
-                }
-            }
-            else if (i == 2) {
-                if (save1 save2) {
-                    // do something
-                }
-            }
-            else {
-                removeOrder(i, queue, queue_length);
-            }
+        if (!isBefore(today, due_now, false)) {   // if order due today or overdue
+            removeOrder(i, queue, queue_length);
+            printf("Order at %d removed...", i);
         }
     }
-    */
+    
+    return queue_length;
 }

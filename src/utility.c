@@ -121,18 +121,6 @@ bool isBefore(Date from, Date to, bool overlap) {
     return true;
 }
 
-/*
- if ( to year < from year ) : no
- elif ( to year > from year ) : yes
- else :
-    if ( to month < from month ) : no
-    elif : ( to month > from month ) : yes
-    else :
-        if ( to day <= from day ) : no
-        else : yes
- 
- */
-
 // --------------------------------------------------------------------------------
 
 int dateToDays(Date from, Date to) {

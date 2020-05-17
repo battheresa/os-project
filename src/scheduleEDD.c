@@ -7,8 +7,6 @@
 
 // creates the queue
 int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now) {
-    int date_earlier(int first, int second, Date date_first, Date date_second);
-    
     Date in_queue;
     Date to_queue;
 
@@ -32,7 +30,7 @@ int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now)
                 for (int j = 0; j < queue_length; j++) {
                     in_queue = constructDate(queue[j].due_date);
                     
-                    if (date_earlier(i, j, to_queue, in_queue) == i) {  //if the date is earlier
+                    if (isBefore(to_queue, in_queue, true)) {   //if the date is earlier
                         placed = j;
                         break;
                     }
@@ -50,20 +48,6 @@ int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now)
     
     return queue_length;
 }
-
-
-// note that this compares with 1 jan 2020
-int date_earlier(int first, int second, Date date_first, Date date_second) {
-    Date now = {01, 01, 2020}; // use "setPeriod(start_date, end_date)" for testing
-    int first_num = dateToDays(now, date_first);
-    int second_num = dateToDays(now, date_second);
-    
-    if (first_num <= second_num)
-        return first;
-    else
-       return second;
-}
-
 
 int count_filled(int plant_filled[]) {
     int count = 0;
@@ -101,14 +85,14 @@ int main() {
 
     /*
     for (int i = 0; i < 4; i++) {
-        edd_queue(orders_read, queue, queue_length, day_now);
+        queue_length = edd_queue(orders_read, queue, queue_length, day_now);
         day_now++;
     }
     */
     
     // reset queue everyday
     while (day_now <= last_arrival_date) {
-        edd_queue(orders_read, queue, queue_length, day_now);
+        queue_length = edd_queue(orders_read, queue, queue_length, day_now);
         queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
         
         order_now = queue[0];
@@ -184,7 +168,7 @@ int main() {
         if (orders_unfinished > 0) {
             order_now.quantity = orders_unfinished;
             total_processed--;
-            queue_length = addOrder(order_now, queue, queue_length);
+            queue_length = addOrder(0, order_now, queue, queue_length);
         }
 
         if (count_filled(plant_filled) <= 3) {

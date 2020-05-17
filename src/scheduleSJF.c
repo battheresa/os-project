@@ -4,29 +4,8 @@
 
 #include "scheduleUtility.c"    // move to scheduleModule.c later
 
-void plant(int task, char order[], int order_quantity, int plant_limit, char order_name[]) {
-    printf("%d %d\n", order_quantity, plant_limit);
-    
-    if (order_quantity >= plant_limit) {
-        task += plant_limit;
-        printf("%d\n", task);
-    }
-    else {
-        task += order_quantity;
-        order_quantity = order_quantity - plant_limit;
-        strcpy(order, order_name);
-    }
-}
 
-int sum(int arr[], int n) {
-    int sum = 0;
-  
-    for (int i = 0; i < n; i++)
-        sum += arr[i];
-  
-    return sum;
-}
-
+// creates the queue
 int sjf_queue(Order orders_read[], Order queue[], int queue_length, int day_now) {
     // sort order according to quantity
     // only consider order with arrival_date == day_now
