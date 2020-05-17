@@ -42,41 +42,13 @@ int split(char source[], int dest[], char dex) {
 
 // --------------------------------------------------------------------------------
 
-typedef struct Order{
-    int quantity;
-    int arrival_date;
-    char due_date[SUB_LENGTH];
-    int finish_date;
-    char order_number[SUB_LENGTH];
-    char product_name[SUB_LENGTH];
-} Order;
-
-int totalOrders() {
-    FILE *file;
-    file = fopen(order_path, "r");    // open write file
-    
-    if (file == NULL) {
-        printf("Error in opening files\n");
-        exit(1);
-    }
-    
-    char temp[SUB_LENGTH];
-    int count = 0;
-    
-    while (fgets(temp, CMD_LENGTH, file))    // while not EOF
-        count++;
-    
-    fclose(file);
-    return count;
-}
-
-// --------------------------------------------------------------------------------
-
 typedef struct Date {
     int day;
     int month;
     int year;
 } Date;
+
+Date start_period, end_period;
 
 Date constructDate(char str[]) {
     Date d;
@@ -106,7 +78,6 @@ void dateToString(Date date, char str[]) {
 
 // --------------------------------------------------------------------------------
 
-Date start_period, end_period;
 int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 void setPeriod(Date start, Date end) {
@@ -125,6 +96,42 @@ bool isValidDate(Date d) {
     
     return true;
 }
+
+// --------------------------------------------------------------------------------
+
+bool isBefore(Date from, Date to, bool overlap) {
+    if (to.year < from.year)
+        return false;
+    
+    if (to.year > from.year)
+        return true;
+    
+    if (to.month < from.month)
+        return false;
+    
+    if (to.month > from.month)
+        return true;
+    
+    if (overlap && to.day < from.day)
+        return false;
+    
+    if (!overlap && to.day <= from.day)
+        return false;
+    
+    return true;
+}
+
+/*
+ if ( to year < from year ) : no
+ elif ( to year > from year ) : yes
+ else :
+    if ( to month < from month ) : no
+    elif : ( to month > from month ) : yes
+    else :
+        if ( to day <= from day ) : no
+        else : yes
+ 
+ */
 
 // --------------------------------------------------------------------------------
 
