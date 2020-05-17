@@ -35,7 +35,7 @@ void addORDER(char data[], int time) {
     substring(data, temp, index + 1, index + 11);
     
     Date date = constructDate(temp);
-    if (end_period.year < date.year || end_period.month < date.month || end_period.day < date.day) {
+    if (end_period.year < date.year || end_period.month < date.month) {
         //printf("invalid order\n");
         fprintf(invalid_file, "%s\n", data);
     }
