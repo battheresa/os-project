@@ -10,6 +10,7 @@
 
 char order_path[] = "_resources/orders.txt";
 char invalid_path[] = "_resources/invalids.txt";
+char raw_path[] = "_resources/raw.txt";
 
 // --------------------------------------------------------------------------------
 
@@ -29,15 +30,16 @@ void substring(char source[], char dest[], int from, int to) {
     dest[to] = 0;
 }
 
-int split(char source[], int dest[], char dex) {
-    int i = 0, index = 0;
-        
-    while (index >= 0) {
-        index = indexOf(source, dex, index, strlen(source));
-        dest[i++] = index++;
+int split(char source[], char *dest[], char dex[]) {
+    int count = 0;
+    char *token = strtok(source, dex);
+    
+    while (token != NULL) {
+        memcpy(dest[count++], token, strlen(token));
+        token = strtok(NULL, dex);
     }
     
-    return i;
+    return count;
 }
 
 // --------------------------------------------------------------------------------
