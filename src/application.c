@@ -62,7 +62,10 @@ int main() {
             substring(instruction, filename, 0, index);     // extract report file name
             
             printf("printREPORT print report to %s\n", filename);
+            printREPORT(instruction);
+            
             arrival_time++;
+            
         }
         
         index = indexOf(instruction, '|', 0, strlen(instruction)); // find index of pipe
