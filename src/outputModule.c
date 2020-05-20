@@ -165,7 +165,7 @@ void printREPORT(char filename[]) {
     }
     
     // read the rest of the file
-    while (fgets(buf_read, ORD_LENGTH, raw_file) != NULL) {
+    while (fgets(buf_read, ORD_LENGTH, raw_file)) {
         buf_read[strlen(buf_read) - 1] = 0; // add EOF
         
         if (buf_read[0] == 'A') {
@@ -184,8 +184,8 @@ void printREPORT(char filename[]) {
     
     // write to file
     writeSchedule(schedule, period, plants_limit, num_schd);
-    writeAnalysis();
-    writePerformance();
+    writeAnalysis(accepted, rejected, num_acct, num_rejt);
+    writePerformance(perfmn_edd, perfmn_sjf, num_plants);
     
     // close both files
     fclose(report_file);
