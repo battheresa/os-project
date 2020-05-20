@@ -8,9 +8,9 @@
 #define CMD_LENGTH 80
 #define ORD_LENGTH 200
 
+char raw_path[] = "_resources/raw.txt";
 char order_path[] = "_resources/orders.txt";
 char invalid_path[] = "_resources/invalids.txt";
-char raw_path[] = "_resources/raw.txt";
 
 // --------------------------------------------------------------------------------
 
@@ -126,6 +126,9 @@ bool isBefore(Date from, Date to, bool overlap) {
 // --------------------------------------------------------------------------------
 
 int dateToDays(Date from, Date to) {
+    if (isBefore(from, to, false))  // if to is before from, return -1;
+        return -1;
+    
     int difference = 0;
     days_in_month[1] = 28;  // reset February to 28 days (isValidDate might have changed it)
     

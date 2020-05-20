@@ -5,43 +5,112 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include "edd.C"
-//#include "sjf2.c" // have main
+//#include "scheduleUtility.c"
+//#include "scheduleEDD.c"
+//#include "scheduleSJF.c"
 
 #define READ 0
 #define WRITE 1
 #define ALGORITHM 2
 
-int total = 10;
 char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
 
-void orderToString(char plant, Order ord, char str[]) {
-    if (ord.quantity == -1)
-        sprintf(str, "%c NA");
-    
-    char arrival[SUB_LENGTH];
-    dateToString(daysToDate(ord.arrival_date), arrival);
-    
-    sprintf(str, "%c %s %s %d %s %d %s", plant, ord.order_number, ord.product_name, ord.quantity, arrival, ord.finish_date, ord.due_date);
-}
 
-void convertAndWrite(Order array[], char indicator, int pipe) {
-    for (int i = 0; i < total; i++) {
-        orderToString(indicator, array[i], buf_write);   // save orders to array of string
-        write(pipe, buf_write, ORD_LENGTH); // write string to parent
+void convertSchedule(Order ord[], char indicator, int pipe) {
+    //for (int i = 0; i < length; i++) {
+    int i = 0;
+    while (ord[i] != 0) {   // check EOF (?)
+        if (ord[i].quantity == -1) {
+            sprintf(buf_write, "NA");
+            write(pipe, buf_write, ORD_LENGTH); // write heading to parent
+            continue;
+        }
+        
+        sprintf(buf_write, "%c %s %s %d %s", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, ord[i].due_date);
+        write(pipe, buf_write, ORD_LENGTH); // write heading to parent
+        i++;
     }
 }
+
+
+void convertAccpeted(Order ord[], char indicator, int pipe) {
+    Date arr, fin;
+    int duration;
+    char arrival[SUB_LENGTH], finish[SUB_LENGTH];
+    
+    //for (int i = 0; i < length; i++) {
+    int i = 0;
+    while (ord[i] != 0) {   // check EOF (?)
+        arr = daysToDate(ord[i].arrival_date);
+        fin = daysToDate(ord[i].finish_date);
+        duration = dateToDays(arr, fin);
+        
+        dateToString(arr, arrival);
+        dateToString(fin, finish);
+        
+        sprintf(buf_write, "%c %s %s %d %s %s %d", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, arrival, finish, duration);
+        write(pipe, buf_write, ORD_LENGTH); // write heading to parent
+        i++;
+    }
+}
+
+
+void convertRejected(Order ord[], char indicator, int pipe) {
+    //for (int i = 0; i < length; i++) {
+    int i = 0;
+    while (ord[i] != 0) {   // check EOF (?)
+        sprintf(buf_write, "%c %s %s %d %s", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, ord[i].due_date);
+        write(pipe, buf_write, ORD_LENGTH); // write heading to parent
+        i++;
+    }
+}
+
+
+void writeSchedule(char *data[]) {
+    int i = num_plants + 1;
+    while (data[i] != 0)    // check EOF (?)
+        fprintf(raw_file, "%s\n", data[i++]);
+}
+
+
+void writeRaw(char algthm[], char *data_edd[], char *data_sjf[]) {
+    FILE *raw_file = fopen(raw_path, "w");
+    
+    // write algorithm name for title of the report
+    fprintf(raw_file, "%s\n", algthm);
+    
+    // write the period
+    char start[SUB_LENGTH], end[SUB_LENGTH];
+    start = dateToString(start_period);
+    end = dateToString(end_period);
+    fprintf(raw_file, "from %s to %s\n", start, end);
+    
+    // write the limit of each plant
+    for (int i = 0; i < num_plants; i++)
+        sprintf(buf_write, "%d ", plants_limit[i]);
+    fprintf(raw_file, "%s\n", buf_write);
+    
+    // write performance of EDD
+    for (int i = 0; i < num_plants; i++)
+        fprintf(raw_file, "%s\n", data_edd[i]);
+    
+    // write performance of SJF
+    for (int i = 0; i < num_plants; i++)
+        fprintf(raw_file, "%s\n", data_sjf[i]);
+    
+    // write schedule of the chosen algorithm
+    if (strcmp(algthm, "EDD") == 0)
+        writeSchedule(data_edd);
+    else
+        writeSchedule(data_sjf);
+    
+    // close file
+    close(raw_file);
+}
+
 
 void runPLS(char algthm[]) {
-    char *data_edd[ORD_LENGTH];
-    char *data_sjf[ORD_LENGTH];
-    
-    for (int i = 0; i < total * 4; i++) {
-        data_edd[i] = malloc(sizeof(char) * ORD_LENGTH);
-        data_sjf[i] = malloc(sizeof(char) * ORD_LENGTH);
-    }
-    
     int fd_P[ALGORITHM][2];     // pipe from parent to child (another program)
     int fd_C[ALGORITHM][2];     // pipe from child to parent
     
@@ -80,26 +149,29 @@ void runPLS(char algthm[]) {
                 // TODO: run schedule SJF
             }
             
-            /*
-            convertAndWrite(plant_X, 'X', fd_C[i][WRITE]);      // write plant_X schedule to plant
-            convertAndWrite(plant_Y, 'Y', fd_C[i][WRITE]);      // write plant_Y schedule to plant
-            convertAndWrite(plant_Z, 'Z', fd_C[i][WRITE]);      // write plant_Z schedule to plant
-            convertAndWrite(finished, 'A', fd_C[i][WRITE]);   // write rejected request to parent
-            convertAndWrite(unfinished, 'R', fd_C[i][WRITE]);   // write rejected request to parent
-            */
+            // write performance of each plant to parent
+            int numerator = 0, denominator = 0;
+            int total_days = dateToDays(start_period, end_period);
+            
+            for (int i = 0; i < num_plants; i++) {
+                numerator += plants_produced[i];
+                denominator += plants_limit[i];
+                write(fd_C[i][WRITE], "%c %d %d %.2f", plants_code[i], plants_days_use[i], plants_produced[i], (float) plants_produced[i] / (float) (total_days * plants_limit[i]));
+            }
+            
+            // write overall performance to parent
+            write(fd_C[i][WRITE], "%.2f", (float) numerator / (float) denominator);
+            
+            // write schedule
+            if ((i == 0 && strcmp(algthm, "EDD") == 0) || (i == 1 && strcmp(algthm, "SJF") == 0))) {
+                convertSchedule(plant_X, plants_code[0], 100, fd_C[i][WRITE]);
+                convertSchedule(plant_Y, plants_code[1], 100, fd_C[i][WRITE]);
+                convertSchedule(plant_Z, plants_code[2], 100, fd_C[i][WRITE]);
+                convertAccpeted(finished, 'A', num_finished, fd_C[i][WRITE]);
+                convertRejected(unfinished, 'R', num_unfinidhed, fd_C[i][WRITE]);
+            }
             
             write(fd_C[i][WRITE], "done", ORD_LENGTH);  // write 'done' to parent
-            
-            // TODO: exec analyze module (analyze module write raw data file)
-            
-            if (i == 0) {
-                // TODO: exec analyze module on EDD
-                // argv = {algorithm (edd / sjf), total_order}
-            }
-            else {
-                // TODO: exec analyze module on SJF
-                // argv = {algorithm (edd / sjf), total_order}
-            }
             
             close(fd_P[i][READ]);   // close read from parent
             close(fd_C[i][WRITE]);  // close wtire from child
@@ -109,6 +181,12 @@ void runPLS(char algthm[]) {
         else if (pid > 0) {
             close(fd_P[i][READ]);   // close read from parent
             close(fd_C[i][WRITE]);  // close wtire from child
+            
+            char *data_edd[ORD_LENGTH], *data_sjf[ORD_LENGTH];
+            for (int i = 0; i < 100; i++) {
+                data_edd[i] = malloc(sizeof(char) * ORD_LENGTH);
+                data_sjf[i] = malloc(sizeof(char) * ORD_LENGTH);
+            }
             
             for (int j = 0; true; j++) {
                 n = read(fd_C[i][READ], buf_read, ORD_LENGTH);  // read from child
@@ -124,7 +202,7 @@ void runPLS(char algthm[]) {
                     memcpy(data_sjf[j], &buf_read[0], ORD_LENGTH);
             }
             
-            // TODO: write string to child (another program)
+            writeRaw(data_edd, data_sjf);
             
             close(fd_P[i][WRITE]);  // close write from parent
             close(fd_C[i][READ]);   // close read from child

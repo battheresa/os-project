@@ -10,15 +10,15 @@ FILE *report_file, * raw_file;
 int items = 10;
 char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
-char thick_line[] = "\n================================================================================\n\n";
-char thin_line[] = "\n--------------------------------------------------------------------------------\n\n";
+char thick_line[] = "==========================================================================================";
+char thin_line[] = "------------------------------------------------------------------------------------------";
 
 
 // write the schedule for each plant
 void writeSchedule(char *data[], char period[], int limits[], int length) {
-    fprintf(report_file, "%s", thick_line);
+    fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Schedule Report\n");
-    fprintf(report_file, "Period from %s\n\n", period);
+    fprintf(report_file, "Period %s\n\n", period);
     
     char *temp[SUB_LENGTH];
     
@@ -40,7 +40,7 @@ void writeSchedule(char *data[], char period[], int limits[], int length) {
         }
         else {
             current = data[i][0];
-            fprintf(buf_write, "%s", thin_line);
+            fprintf(buf_write, "\n%s\n\n", thin_line);
             fprintf(buf_write, "Plant %c (%d per day):\n\n", current, limits[plant_now++]);
             fprintf(buf_write, "Date\t\t\tOrder Number\t\tProduct Name\t\tQuantity\t\tDue Date");
         }
@@ -51,12 +51,12 @@ void writeSchedule(char *data[], char period[], int limits[], int length) {
 
 // write accepted and rejected orders
 void writeAnalysis(char *accepted, char *rejected, int length_acct, int length_rejt) {
-    fprintf(report_file, "%s", thick_line);
+    fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Analysis Report\n\n");
     
     fprintf(report_file, "Orders Accepted (total of %d orders):\n\n", length_acct);
-    fprintf(report_file, "Product Name\t\tQuantity\t\tStart\t\t\tFinish\t\t\tDuration\n");
-    for (int i = 0; i < num_acct; i++) {
+    fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\Arrival\t\t\tFinish\t\t\tDuration\n");
+    for (int i = 0; i < length_acct; i++) {
         
         // TODO: write orders
         
@@ -64,7 +64,7 @@ void writeAnalysis(char *accepted, char *rejected, int length_acct, int length_r
     
     fprintf(report_file, "Orders Rejected (total of %d orders):\n\n", length_rejt);
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
-    for (int i = 0; i < num_rejt; i++) {
+    for (int i = 0; i < length_rejt; i++) {
         
         // TODO: write orders
         
@@ -72,9 +72,9 @@ void writeAnalysis(char *accepted, char *rejected, int length_acct, int length_r
 }
 
 
-// write performance
+// write performance -- X [days in use] [produced] [utilization]
 void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
-    fprintf(report_file, "%s", thick_line);
+    fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Performance Report\n\n");
     
     fprintf(report_file, "Algorithm EDD (Earliest Due Date):\n\n");
@@ -128,30 +128,34 @@ void printREPORT(char filename[]) {
     // read first line (report title) and write to report file
     fgets(buf_read, ORD_LENGTH, raw_file);
     buf_read[strlen(buf_read) - 1] = 0;
-    fprintf(report_file, "%s\n", buf_read);
+    fprintf(report_file, "Report with %s Scheduling Algorithm\n", buf_read);
     
     // read period of the schedule
     fgets(period, ORD_LENGTH, raw_file);
     period[strlen(period) - 1] = 0;
     
-    // read second line (number of plants)
+    // read third line (number of plants)
     fgets(buf_read, ORD_LENGTH, raw_file);
     buf_read[strlen(buf_read) - 1] = 0;
     
-    int num_plants = atoi(buf_read);
-    int plants_limit[num_plants];
-    char *perfmn_edd[num_plants];
-    char *perfmn_sjf[num_plants];
+    int num_plants = split(buf_read, temp, " ");
     
-    // read plants per day
-    fgets(buf_read, ORD_LENGTH, raw_file);
-    buf_read[strlen(buf_read) - 1] = 0;
+    // initialize arrays
+    char *temp[CMD_LENGTH];
+    char *perfmn_edd[CMD_LENGTH];
+    char *perfmn_sjf[CMD_LENGTH];
     
-    char *token = strtok(buf_read, " ");
-    while (token != NULL) {
-        plants_limit[i] = atoi(token);
-        token = strtok(NULL, " ");
+    for (int i = 0; i < num_plants; i++) {
+        temp[i] = malloc(sizeof(char) * CMD_LENGTH);
+        perfmn_edd[i] = malloc(sizeof(char) * CMD_LENGTH);
+        perfmn_sjf[i] = malloc(sizeof(char) * CMD_LENGTH);
     }
+    
+    // assign plants limit for each plants
+    int plants_limit[num_plants];
+    
+    for (int i = 0; i < num_plants; i++)
+        plants_limit[i] = atoi(temp[i]);
     
     // read performance of each plant of EDD
     for (int i = 0; i < num_plants; i++) {
@@ -197,43 +201,43 @@ void printREPORT(char filename[]) {
 /*
 Report of XXX (...) scheduling
 
-========================================================================================== (90)
+==================================================================================================== (100)
 
 Schedule Report
 Period from [period range]
 
------------------------------------------------------------------------------------------- (90)
+---------------------------------------------------------------------------------------------------- (100)
  
 Plant X (300 per day):
            3t                  2t                  2t              2t
 Date            Order Number        Product Name        Quantity        Due Date
 YYYY-MM-DD      P_XXX               Product_A           XXXX            YYYY-MM-DD
 
------------------------------------------------------------------------------------------- (90)
+---------------------------------------------------------------------------------------------------- (100)
 
 Plant Y (400 per day):
  
 ...
  
-========================================================================================== (90)
+==================================================================================================== (100)
   
 Analysis Report
  
------------------------------------------------------------------------------------------- (90)
+---------------------------------------------------------------------------------------------------- (100)
  
 Orders Accepted (total of xxx orders):
-               2t              2t             3t              3t
-Product Name        Quantity        Start           Finish          Duration
-P_XXX               XXXX            YYYY-MM-DD      YYYY-MM-DD      XXXX
+               2t                  2t              2t              3t             3t
+Order Number        Product Name        Quantity        Arrival         Finish          Duration
+P_XXX               Product_A           XXXX            YYYY-MM-DD      YYYY-MM-DD      XXXX
 
------------------------------------------------------------------------------------------- (90)
+---------------------------------------------------------------------------------------------------- (100)
  
 Orders Rejected (total of xxx orders):
                2t                  2t               2t
 Order Number        Product Name        Quantity        Due Date
 P_XXX               Product_A           XXXX            YYYY-MM-DD
 
-========================================================================================== (90)
+==================================================================================================== (100)
 
 Performance Report
  
