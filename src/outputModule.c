@@ -8,6 +8,7 @@
 FILE *report_file, * raw_file;
 
 int items = 10;
+char *temp[SUB_LENGTH];
 char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
 char thick_line[] = "==========================================================================================";
@@ -20,32 +21,28 @@ void writeSchedule(char *data[], char period[], int limits[], int length) {
     fprintf(report_file, "Schedule Report\n");
     fprintf(report_file, "Period %s\n\n", period);
     
-    char *temp[SUB_LENGTH];
-    
-    for (int i = 0; i < items; i++)
-        temp[i] = malloc(sizeof(char) * SUB_LENGTH);
-    
     char current = 'N';
-    int plant_now = 0, line = 0;
+    char today_date[SUB_LENGTH];
+    int plant_now = 0, line = 0, today_num = 0;
     
     while (line < length) {
-        if (data[i][0] == current) {    // if first char in schedule is the same plant
+        if (data[line][0] == current) {    // if first char in schedule is the same plant
+            dateToString(daysToDate(today_num), today_date);
+            
             substring(data[line], buf_write, 2, strlen(data[line]));  // remove plant
+            split(data[line], temp, " ");
+            fprintf(buf_write, "%s\t\t%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", today_date, temp[0], temp[1], temp[2], temp[3]);
             
-            // TODO: write orders
-            // split order
-            // format them
-            
+            today_num++;
             line++;
         }
         else {
-            current = data[i][0];
+            current = data[line][0];
             fprintf(buf_write, "\n%s\n\n", thin_line);
             fprintf(buf_write, "Plant %c (%d per day):\n\n", current, limits[plant_now++]);
             fprintf(buf_write, "Date\t\t\tOrder Number\t\tProduct Name\t\tQuantity\t\tDue Date");
         }
     }
-    
 }
 
 
@@ -57,46 +54,45 @@ void writeAnalysis(char *accepted, char *rejected, int length_acct, int length_r
     fprintf(report_file, "Orders Accepted (total of %d orders):\n\n", length_acct);
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\Arrival\t\t\tFinish\t\t\tDuration\n");
     for (int i = 0; i < length_acct; i++) {
-        
-        // TODO: write orders
-        
+        split(data[line], temp, " ");
+        fprintf(buf_write, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\t\t%s\t\t%s\n", temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]);
     }
     
     fprintf(report_file, "Orders Rejected (total of %d orders):\n\n", length_rejt);
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
     for (int i = 0; i < length_rejt; i++) {
-        
-        // TODO: write orders
-        
+        split(data[line], temp, " ");
+        fprintf(buf_write, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", temp[0], temp[1], temp[2], temp[3]);
     }
 }
 
 
-// write performance -- X [days in use] [produced] [utilization]
+// write performance
 void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Performance Report\n\n");
     
     fprintf(report_file, "Algorithm EDD (Earliest Due Date):\n\n");
     for (int i = 0; i < length; i++) {
-        fprintf(report_file, "Plant %c", strtok(perfmn_edd[i], " "));
-        fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", strtok(NULL, " "));
-        fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", strtok(NULL, " "));
-        fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s %%\n", strtok(NULL, " "));
+        split(perfmn_edd[i], temp, " ");
+        fprintf(report_file, "Plant %c", temp[0]);
+        fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", temp[1]);
+        fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", temp[2]);
+        fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s %%\n", temp[3]);
     }
     
     fprintf(report_file, "%s", thin_line);
     fprintf(report_file, "Algorithm SJF (Earliest Due Date):\n\n");
     for (int i = 0; i < length; i++) {
-        fprintf(report_file, "Plant %c", strtok(perfmn_sjf[i], " "));
-        fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", strtok(NULL, " "));
-        fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", strtok(NULL, " "));
-        fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s %%\n", strtok(NULL, " "));
+        split(perfmn_sjf[i], temp, " ");
+        fprintf(report_file, "Plant %c", temp[0]);
+        fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", temp[1]);
+        fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", temp[2]);
+        fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s %%\n", temp[3]);
     }
 }
 
 
-//int main() {
 void printREPORT(char filename[]) {
     char report_path[SUB_LENGTH] = "_reports/";
     strcat(report_path, filename);
@@ -119,11 +115,14 @@ void printREPORT(char filename[]) {
     char *rejected[ORD_LENGTH];
     
     // allocate space for orders in arrays
-    for (int i = 0; i < total * 4; i++) {
+    for (int i = 0; i < 1000; i++) {    // temp size 100
         schedule[i] = malloc(sizeof(char) * ORD_LENGTH);
         accepted[i] = malloc(sizeof(char) * ORD_LENGTH);
         rejected[i] = malloc(sizeof(char) * ORD_LENGTH);
     }
+    
+    for (int i = 0; i < 6; i++)
+        temp[i] = malloc(sizeof(char) * SUB_LENGTH);
     
     // read first line (report title) and write to report file
     fgets(buf_read, ORD_LENGTH, raw_file);
@@ -134,13 +133,14 @@ void printREPORT(char filename[]) {
     fgets(period, ORD_LENGTH, raw_file);
     period[strlen(period) - 1] = 0;
     
-    // read third line (number of plants)
+    // read limits of each plants
     fgets(buf_read, ORD_LENGTH, raw_file);
     buf_read[strlen(buf_read) - 1] = 0;
     
     int num_plants = split(buf_read, temp, " ");
     
     // initialize arrays
+    int plants_limit[num_plants];
     char *temp[CMD_LENGTH];
     char *perfmn_edd[CMD_LENGTH];
     char *perfmn_sjf[CMD_LENGTH];
@@ -150,9 +150,6 @@ void printREPORT(char filename[]) {
         perfmn_edd[i] = malloc(sizeof(char) * CMD_LENGTH);
         perfmn_sjf[i] = malloc(sizeof(char) * CMD_LENGTH);
     }
-    
-    // assign plants limit for each plants
-    int plants_limit[num_plants];
     
     for (int i = 0; i < num_plants; i++)
         plants_limit[i] = atoi(temp[i]);
@@ -212,7 +209,7 @@ Plant X (300 per day):
            3t                  2t                  2t              2t
 Date            Order Number        Product Name        Quantity        Due Date
 YYYY-MM-DD      P_XXX               Product_A           XXXX            YYYY-MM-DD
-
+            2t               4t                   3t              3t
 ---------------------------------------------------------------------------------------------------- (100)
 
 Plant Y (400 per day):
@@ -229,14 +226,14 @@ Orders Accepted (total of xxx orders):
                2t                  2t              2t              3t             3t
 Order Number        Product Name        Quantity        Arrival         Finish          Duration
 P_XXX               Product_A           XXXX            YYYY-MM-DD      YYYY-MM-DD      XXXX
-
+             4t                   3t              3t                2t              2t
 ---------------------------------------------------------------------------------------------------- (100)
  
 Orders Rejected (total of xxx orders):
                2t                  2t               2t
 Order Number        Product Name        Quantity        Due Date
 P_XXX               Product_A           XXXX            YYYY-MM-DD
-
+              4t                  3t             3t
 ==================================================================================================== (100)
 
 Performance Report

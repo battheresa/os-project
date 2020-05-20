@@ -17,10 +17,8 @@ char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
 
 
-void convertSchedule(Order ord[], char indicator, int pipe) {
-    //for (int i = 0; i < length; i++) {
-    int i = 0;
-    while (ord[i] != 0) {   // check EOF (?)
+void convertSchedule(Order ord[], char indicator, int length, int pipe) {
+    for (int i = 0; i < length; i++) {
         if (ord[i].quantity == -1) {
             sprintf(buf_write, "NA");
             write(pipe, buf_write, ORD_LENGTH); // write heading to parent
@@ -34,14 +32,12 @@ void convertSchedule(Order ord[], char indicator, int pipe) {
 }
 
 
-void convertAccpeted(Order ord[], char indicator, int pipe) {
+void convertAccpeted(Order ord[], char indicator, int length, int pipe) {
     Date arr, fin;
     int duration;
     char arrival[SUB_LENGTH], finish[SUB_LENGTH];
     
-    //for (int i = 0; i < length; i++) {
-    int i = 0;
-    while (ord[i] != 0) {   // check EOF (?)
+    for (int i = 0; i < length; i++) {
         arr = daysToDate(ord[i].arrival_date);
         fin = daysToDate(ord[i].finish_date);
         duration = dateToDays(arr, fin);
@@ -56,10 +52,8 @@ void convertAccpeted(Order ord[], char indicator, int pipe) {
 }
 
 
-void convertRejected(Order ord[], char indicator, int pipe) {
-    //for (int i = 0; i < length; i++) {
-    int i = 0;
-    while (ord[i] != 0) {   // check EOF (?)
+void convertRejected(Order ord[], char indicator, int length, int pipe) {
+    for (int i = 0; i < length; i++) {
         sprintf(buf_write, "%c %s %s %d %s", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, ord[i].due_date);
         write(pipe, buf_write, ORD_LENGTH); // write heading to parent
         i++;
@@ -67,14 +61,13 @@ void convertRejected(Order ord[], char indicator, int pipe) {
 }
 
 
-void writeSchedule(char *data[]) {
-    int i = num_plants + 1;
-    while (data[i] != 0)    // check EOF (?)
-        fprintf(raw_file, "%s\n", data[i++]);
+void writeSchedule(char *data[], int length) {
+    for (int i = num_plants + 1; i < length; i++)
+        fprintf(raw_file, "%s\n", data[i]);
 }
 
 
-void writeRaw(char algthm[], char *data_edd[], char *data_sjf[]) {
+void writeRaw(char algthm[], char *data_edd[], char *data_sjf[], int length) {
     FILE *raw_file = fopen(raw_path, "w");
     
     // write algorithm name for title of the report
@@ -101,9 +94,9 @@ void writeRaw(char algthm[], char *data_edd[], char *data_sjf[]) {
     
     // write schedule of the chosen algorithm
     if (strcmp(algthm, "EDD") == 0)
-        writeSchedule(data_edd);
+        writeSchedule(data_edd, length);
     else
-        writeSchedule(data_sjf);
+        writeSchedule(data_sjf, length);
     
     // close file
     close(raw_file);
@@ -114,6 +107,7 @@ void runPLS(char algthm[]) {
     int fd_P[ALGORITHM][2];     // pipe from parent to child (another program)
     int fd_C[ALGORITHM][2];     // pipe from child to parent
     
+    int total_days = dateToDays(start_period, end_period);
     int pid, cid, n;
     
     for (int i = 0; i < ALGORITHM; i++) {
@@ -151,7 +145,6 @@ void runPLS(char algthm[]) {
             
             // write performance of each plant to parent
             int numerator = 0, denominator = 0;
-            int total_days = dateToDays(start_period, end_period);
             
             for (int i = 0; i < num_plants; i++) {
                 numerator += plants_produced[i];
@@ -164,9 +157,9 @@ void runPLS(char algthm[]) {
             
             // write schedule
             if ((i == 0 && strcmp(algthm, "EDD") == 0) || (i == 1 && strcmp(algthm, "SJF") == 0))) {
-                convertSchedule(plant_X, plants_code[0], 100, fd_C[i][WRITE]);
-                convertSchedule(plant_Y, plants_code[1], 100, fd_C[i][WRITE]);
-                convertSchedule(plant_Z, plants_code[2], 100, fd_C[i][WRITE]);
+                convertSchedule(plant_X, plants_code[0], total_days, fd_C[i][WRITE]);
+                convertSchedule(plant_Y, plants_code[1], total_days, fd_C[i][WRITE]);
+                convertSchedule(plant_Z, plants_code[2], total_days, fd_C[i][WRITE]);
                 convertAccpeted(finished, 'A', num_finished, fd_C[i][WRITE]);
                 convertRejected(unfinished, 'R', num_unfinidhed, fd_C[i][WRITE]);
             }
@@ -183,7 +176,9 @@ void runPLS(char algthm[]) {
             close(fd_C[i][WRITE]);  // close wtire from child
             
             char *data_edd[ORD_LENGTH], *data_sjf[ORD_LENGTH];
-            for (int i = 0; i < 100; i++) {
+            int lines = (total_days * num_plants) + ((num_plants + 1) * 2) + 3;
+            
+            for (int i = 0; i < lines ; i++) {
                 data_edd[i] = malloc(sizeof(char) * ORD_LENGTH);
                 data_sjf[i] = malloc(sizeof(char) * ORD_LENGTH);
             }
@@ -202,7 +197,7 @@ void runPLS(char algthm[]) {
                     memcpy(data_sjf[j], &buf_read[0], ORD_LENGTH);
             }
             
-            writeRaw(data_edd, data_sjf);
+            writeRaw(algthm, data_edd, data_sjf, total_days);
             
             close(fd_P[i][WRITE]);  // close write from parent
             close(fd_C[i][READ]);   // close read from child
