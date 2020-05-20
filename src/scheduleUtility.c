@@ -9,6 +9,7 @@
 
 int plants_num = 3;
 int plants_limit[] = {300, 400, 500};
+int plants_days_use[] = {0, 0, 0};
 char plants_code[] = {'X', 'Y', 'Z'};
 
 int total_order = 0;    // total orders
@@ -69,20 +70,17 @@ int readOrders(Order orders_read[]) {
     while (fgets(buf_read, CMD_LENGTH, in_file)) {  // while not EOF
         buf_read[strlen(buf_read) - 1] = 0;     // remove new line from temp
         
-        token = strtok(buf_read, " ");
-        orders_read[total_order].arrival_date = atoi(token);
-    
-        token = strtok(NULL, " ");
-        memcpy(orders_read[total_order].order_number, token, MIN_LENGTH);
+        char *temp[SUB_LENGTH];
+        for (int i = 0; i < 6; i++)
+            temp[i] = malloc(sizeof(char) * SUB_LENGTH);
         
-        token = strtok(NULL, " ");
-        memcpy(orders_read[total_order].due_date, token, MIN_LENGTH);
+        split(buf_read, temp, " ");
         
-        token = strtok(NULL, " ");
-        orders_read[total_order].quantity = atoi(token);
-        
-        token = strtok(NULL, " ");
-        memcpy(orders_read[total_order].product_name, token, MIN_LENGTH);
+        orders_read[total_order].arrival_date = atoi(temp[0]);
+        memcpy(orders_read[total_order].order_number, temp[1], MIN_LENGTH);
+        memcpy(orders_read[total_order].due_date, temp[2], MIN_LENGTH);
+        orders_read[total_order].quantity = atoi(temp[3]);
+        memcpy(orders_read[total_order].product_name, temp[4], MIN_LENGTH);
         
         total_order++;
     }

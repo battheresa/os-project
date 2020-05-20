@@ -61,10 +61,6 @@ int count_filled(int plant_filled[]) {
 
 
 int main() {
-    int days_plantX = 0;
-    int days_plantY = 0;
-    int days_plantZ = 0;
-
     Order orders_read[ORDER_SIZE];
     total_order = readOrders(orders_read);  // read orders from file
 
@@ -124,7 +120,7 @@ int main() {
             if ((count_filled(plant_filled) >= 2 || orders_unfinished <= plants_limit[0]) && (plant_filled[0] == 0)) {
                 plantX[day_now] = order_now;
                 plantX[day_now].finish_date = day_now;
-                days_plantX++;
+                plants_days_use[0]++;
 
                 if (orders_unfinished <= plants_limit[0]) {
                     plantX[day_now].quantity = orders_unfinished;
@@ -140,7 +136,7 @@ int main() {
             else if ((count_filled(plant_filled) >= 1 || orders_unfinished <= plants_limit[1]) && (plant_filled[1] == 0)) {
                 plantY[day_now] = order_now;
                 plantY[day_now].finish_date = day_now;
-                days_plantY++;
+                plants_days_use[1]++;
 
                 if (orders_unfinished <= plants_limit[1]) {
                     plantY[day_now].quantity = orders_unfinished;
@@ -156,7 +152,7 @@ int main() {
             else {
                 plantZ[day_now] = order_now;
                 plantZ[day_now].finish_date = day_now;
-                days_plantZ++;
+                plants_days_use[2]++;
 
                 if (orders_unfinished <= plants_limit[2]) {
                     plantZ[day_now].quantity = orders_unfinished;
