@@ -52,7 +52,7 @@ void writeAnalysis(char *accepted, char *rejected, int length_acct, int length_r
     fprintf(report_file, "Analysis Report\n\n");
     
     fprintf(report_file, "Orders Accepted (total of %d orders):\n\n", length_acct);
-    fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\Arrival\t\t\tFinish\t\t\tDuration\n");
+    fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tArrival\t\t\tFinish\t\t\tDuration\n");
     for (int i = 0; i < length_acct; i++) {
         split(data[line], temp, " ");
         fprintf(buf_write, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\t\t%s\t\t%s\n", temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]);
@@ -141,12 +141,10 @@ void printREPORT(char filename[]) {
     
     // initialize arrays
     int plants_limit[num_plants];
-    char *temp[CMD_LENGTH];
     char *perfmn_edd[CMD_LENGTH];
     char *perfmn_sjf[CMD_LENGTH];
     
     for (int i = 0; i < num_plants; i++) {
-        temp[i] = malloc(sizeof(char) * CMD_LENGTH);
         perfmn_edd[i] = malloc(sizeof(char) * CMD_LENGTH);
         perfmn_sjf[i] = malloc(sizeof(char) * CMD_LENGTH);
     }
