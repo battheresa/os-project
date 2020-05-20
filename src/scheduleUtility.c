@@ -10,10 +10,12 @@
 int plants_num = 3;
 int plants_limit[] = {300, 400, 500};
 int plants_days_use[] = {0, 0, 0};
+int plants_produced[] = {0, 0, 0};
 char plants_code[] = {'X', 'Y', 'Z'};
 
-int total_order = 0;    // total orders
-int orders_unfinished = 0;
+int total_order = 0;
+int num_finished = 0;   // TODO: count finished orders
+int num_unfinished = 0; // TODO: count unfinished order
 
 // --------------------------------------------------------------------------------
 
@@ -29,6 +31,7 @@ typedef struct Order{
 Order plantX[ORDER_SIZE];
 Order plantY[ORDER_SIZE];
 Order plantZ[ORDER_SIZE];
+Order finished[ORDER_SIZE];     // TODO: keep track of all finished orders
 Order unfinished[ORDER_SIZE];
 
 Order null_order = {-1, 0, "null", 0, "null", "null"};

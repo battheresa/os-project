@@ -67,14 +67,12 @@ int main() {
     int last_arrival_date = orders_read[total_order - 1].arrival_date;
     int day_now = 0;    // start the first day with 0
     int count_assigned = 0;
-    int total_processed = 0;
     
     Order order_now;
     Order queue[ORDER_SIZE];
     
     int queue_length = 0;
-    int order_amount = 0;
-    char order_name[15];
+    int orders_unfinished = 0;
     
     int quantity;
     int arrival_date;
@@ -96,7 +94,6 @@ int main() {
         queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
         
         order_now = queue[0];
-        total_processed++;
         orders_unfinished = order_now.quantity;
         queue_length = removeOrder(0, queue, queue_length);
 
@@ -111,7 +108,6 @@ int main() {
                 
                 orders_unfinished = order_now.quantity;
                 queue_length = removeOrder(0, queue, queue_length);
-                total_processed++;
             }
             
             //printf("%s %d ",order_now.order_number,orders_unfinished);
@@ -170,7 +166,6 @@ int main() {
 
         if (orders_unfinished > 0) {
             order_now.quantity = orders_unfinished;
-            total_processed--;
             queue_length = addOrder(0, order_now, queue, queue_length);
         }
 
