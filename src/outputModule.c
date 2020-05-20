@@ -93,13 +93,9 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
 
 
 void printREPORT(char filename[]) {
-    printf("filename: %s\n", filename);     // pass
-    
     char report_path[CMD_LENGTH] = "_reports/";
     strcat(report_path, filename);
-    
-    printf("report_path: %s\n", report_path);   // pass
-    
+        
     report_file = fopen(report_path, "w");
     raw_file = fopen(raw_path, "r");
     
@@ -107,8 +103,6 @@ void printREPORT(char filename[]) {
         printf("Error in opening files\n");
         exit(1);
     }
-    
-    printf("open files success\n");     // pass
     
     int num_schd = 0;
     int num_acct = 0;
@@ -126,17 +120,12 @@ void printREPORT(char filename[]) {
         rejected[i] = malloc(sizeof(char) * ORD_LENGTH);
     }
     
-    printf("malloc 1 success\n");     //
-    
     for (int i = 0; i < 6; i++)
         temp_out[i] = malloc(sizeof(char) * CMD_LENGTH);
-    
-    printf("malloc 2 success\n");     // fail
-    
+        
     // read first line (report title) and write to report file
     fgets(buf_read, ORD_LENGTH, raw_file);
     buf_read[strlen(buf_read)] = 0;
-    printf("first line: %s\n", buf_read);
     fprintf(report_file, "Report with %s Scheduling Algorithm\n", buf_read);
     
     // read period of the schedule
