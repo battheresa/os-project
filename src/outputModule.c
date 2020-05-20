@@ -5,7 +5,6 @@
 
 FILE *report_file, * raw_file;
 
-int items = 10;
 char *temp_out[CMD_LENGTH];
 char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
