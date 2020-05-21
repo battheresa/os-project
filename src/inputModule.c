@@ -12,7 +12,7 @@ void addPERIOD(char from[], char to[]) {
     Date end = constructDate(to);
     
     if (!isValidDate(start) || !isValidDate(end))   // if invalid date, return -1
-        return -1;
+        return;
     
     setPeriod(start, end);
 }
