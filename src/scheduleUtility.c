@@ -28,6 +28,8 @@ typedef struct Order{
     char product_name[SUB_LENGTH];
 } Order;
 
+Order orders_read[ORDER_SIZE];
+
 Order plantX[ORDER_SIZE];
 Order plantY[ORDER_SIZE];
 Order plantZ[ORDER_SIZE];
@@ -125,4 +127,55 @@ int overdue(Order queue[], Order unfinished[], int queue_length, int day_now) {
     }
     
     return queue_length;
+}
+
+// --------------------------------------------------------------------------------
+
+bool compareOrder(Order a, Order b) {
+    if (a.arrival_date != b.arrival_date)
+        return false;
+
+    if (strcmp(a.due_date, b.due_date) != 0)
+        return false;
+    
+    if (strcmp(a.order_number, b.order_number) != 0)
+        return false;
+    
+    if (strcmp(a.product_name, b.product_name) != 0)
+        return false;
+    
+    return true;
+}
+
+
+bool isUnfinished(Order check, Order unfinished[]) {
+    for (int i = 0; i < num_unfinished; i++)
+        if (compareOrder(check, unfinished[i]))
+            return true;
+    
+    return false;
+}
+
+
+// find the finished date
+int findLast(Order now, int length) {
+    int last = 0;
+    
+    for (int i = 0; i < length; i++)
+        if (compareOrder(now, plantX[i]) || compareOrder(now, plantY[i]) || compareOrder(now, plantZ[i]))
+            last = i;
+    
+    return last;
+}
+
+
+// subtract from total_order from unfinished order and update the finished order
+void generateFinished(Order orders_read[], Order unfinished[], int length) {
+    for (int i = 0; i < total_order; i++) {
+        if (!isUnfinished(orders_read[i], unfinished)) {
+            finished[num_finished] = orders_read[i];
+            finished[num_finished].finish_date = findLast(orders_read[i], length);
+            num_finished++;
+        }
+    }
 }

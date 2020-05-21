@@ -9,18 +9,12 @@
 int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now) {
     Date in_queue;
     Date to_queue;
-
-    //printf("queue length: %d\n", queue_length);
     
     for (int i = 0; i < total_order; i++) {
         int placed = queue_length;
 
         if (orders_read[i].arrival_date == day_now) {
-            //printf("queue length: %d\n",queue_length);
-
             to_queue = constructDate(orders_read[i].due_date);
-            
-            //printf("%s \n", orders_read[i].order_number);
             
             if (queue_length == 0) {
                 queue[queue_length] = orders_read[i];
@@ -61,17 +55,16 @@ int count_filled(int plant_filled[]) {
 
 
 int main() {
-    Order orders_read[ORDER_SIZE];
     total_order = readOrders(orders_read);  // read orders from file
 
     int last_arrival_date = orders_read[total_order - 1].arrival_date;
-    int day_now = 0;    // start the first day with 0
-    int count_assigned = 0;
+    int day_now = 0;
     
     Order order_now;
     Order queue[ORDER_SIZE];
     
     int queue_length = 0;
+    int count_assigned = 0;
     int orders_unfinished = 0;
     
     int quantity;
@@ -80,13 +73,6 @@ int main() {
     int finish_date;
     char order_number[SUB_LENGTH];
     char product_name[SUB_LENGTH];
-
-    /*
-    for (int i = 0; i < 4; i++) {
-        queue_length = edd_queue(orders_read, queue, queue_length, day_now);
-        day_now++;
-    }
-    */
     
     // reset queue everyday
     while (day_now <= last_arrival_date) {
@@ -109,9 +95,7 @@ int main() {
                 orders_unfinished = order_now.quantity;
                 queue_length = removeOrder(0, queue, queue_length);
             }
-            
-            //printf("%s %d ",order_now.order_number,orders_unfinished);
-            
+                        
             // assigning the order to the different plants
             if ((count_filled(plant_filled) >= 2 || orders_unfinished <= plants_limit[0]) && (plant_filled[0] == 0)) {
                 plantX[day_now] = order_now;
@@ -182,6 +166,14 @@ int main() {
         
         day_now++;
     }
+    
+    generateFinished(orders_read, unfinished, day_now);
+    
+    printf("finished orders: %d\n", num_finished);
+    printf("unfinished orders: %d\n", num_unfinished);
+    
+    printSchedule('F', num_finished, finished);
+    printSchedule('U', num_unfinished, unfinished);
     
     printSchedule(plants_code[0], day_now, plantX);
     printSchedule(plants_code[1], day_now, plantY);
