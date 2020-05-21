@@ -22,8 +22,6 @@ void reset() {
 
 // write the schedule of each plant to report file
 void writeSchedule(char *data[], char period[], int limits[], int length) {
-    printf("in write schedule\n");
-    
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Schedule Report\n");
     fprintf(report_file, "Period %s\n\n\n", period);
@@ -65,8 +63,6 @@ void writeSchedule(char *data[], char period[], int limits[], int length) {
 
 // write accepted and rejected orders to report file
 void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int length_rejt) {
-    printf("in write analysis\n");
-    
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Analysis Report\n\n\n");
     
@@ -91,9 +87,7 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
 
 
 // write performance to report file
-void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
-    printf("in write performance\n");
-    
+void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {    
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Performance Report\n\n\n");
     
