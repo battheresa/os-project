@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "utility.c"
-
 #define ORDER_SIZE 1000
 
 int plants_num = 3;
@@ -13,9 +11,10 @@ int plants_days_use[] = {0, 0, 0};
 int plants_produced[] = {0, 0, 0};
 char plants_code[] = {'X', 'Y', 'Z'};
 
+int total_days = 0;
 int total_order = 0;
-int num_finished = 0;   // TODO: count finished orders
-int num_unfinished = 0; // TODO: count unfinished order
+int num_finished = 0;
+int num_unfinished = 0;
 
 // --------------------------------------------------------------------------------
 
@@ -33,7 +32,7 @@ Order orders_read[ORDER_SIZE];
 Order plantX[ORDER_SIZE];
 Order plantY[ORDER_SIZE];
 Order plantZ[ORDER_SIZE];
-Order finished[ORDER_SIZE];     // TODO: keep track of all finished orders
+Order finished[ORDER_SIZE];
 Order unfinished[ORDER_SIZE];
 
 Order null_order = {-1, 0, "null", 0, "null", "null"};
@@ -72,12 +71,12 @@ int readOrders(Order orders_read[]) {
         exit(1);
     }
     
+    char *temp[SUB_LENGTH];
+    for (int i = 0; i < 6; i++)
+        temp[i] = malloc(sizeof(char) * SUB_LENGTH);
+    
     while (fgets(buf_read, CMD_LENGTH, in_file)) {  // while not EOF
         buf_read[strlen(buf_read) - 1] = 0;     // remove new line from temp
-        
-        char *temp[SUB_LENGTH];
-        for (int i = 0; i < 6; i++)
-            temp[i] = malloc(sizeof(char) * SUB_LENGTH);
         
         split(buf_read, temp, " ");
         
@@ -89,6 +88,9 @@ int readOrders(Order orders_read[]) {
         
         total_order++;
     }
+    
+    for (int i = 0; i < 6; i++)
+        free(temp[i]);
     
     fclose(in_file);
     return total_order;
@@ -131,6 +133,22 @@ int overdue(Order queue[], Order unfinished[], int queue_length, int day_now) {
 
 // --------------------------------------------------------------------------------
 
+void generateProduced(int length) {
+    for (int i = 0; i < length; i++) {
+        if (plantX[i].quantity > 0)
+            plants_produced[0] += plantX[i].quantity;
+        
+        if (plantY[i].quantity > 0)
+            plants_produced[1] += plantY[i].quantity;
+        
+        if (plantZ[i].quantity > 0)
+            plants_produced[2] += plantZ[i].quantity;
+    }
+}
+
+// --------------------------------------------------------------------------------
+
+// compare two Orders
 bool compareOrder(Order a, Order b) {
     if (a.arrival_date != b.arrival_date)
         return false;
@@ -147,7 +165,7 @@ bool compareOrder(Order a, Order b) {
     return true;
 }
 
-
+// check is the order is in unfinished array
 bool isUnfinished(Order check, Order unfinished[]) {
     for (int i = 0; i < num_unfinished; i++)
         if (compareOrder(check, unfinished[i]))
@@ -155,7 +173,6 @@ bool isUnfinished(Order check, Order unfinished[]) {
     
     return false;
 }
-
 
 // find the finished date
 int findLast(Order now, int length) {
@@ -167,7 +184,6 @@ int findLast(Order now, int length) {
     
     return last;
 }
-
 
 // subtract from total_order from unfinished order and update the finished order
 void generateFinished(Order orders_read[], Order unfinished[], int length) {

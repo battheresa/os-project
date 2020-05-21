@@ -7,7 +7,7 @@ char temp_in[SUB_LENGTH];
 
 // --------------------------------------------------------------------------------
 
-int addPERIOD(char from[], char to[]) {
+void addPERIOD(char from[], char to[]) {
     Date start = constructDate(from);
     Date end = constructDate(to);
     
@@ -15,8 +15,6 @@ int addPERIOD(char from[], char to[]) {
         return -1;
     
     setPeriod(start, end);
-    
-    return dateToDays(start, end);
 }
 
 // --------------------------------------------------------------------------------

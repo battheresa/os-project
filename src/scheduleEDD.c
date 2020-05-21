@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "scheduleUtility.c"    // move to scheduleModule.c later
-
-
 // creates the queue
 int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now) {
     Date in_queue;
@@ -43,6 +40,8 @@ int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now)
     return queue_length;
 }
 
+
+// count plants filled
 int count_filled(int plant_filled[]) {
     int count = 0;
     
@@ -54,7 +53,7 @@ int count_filled(int plant_filled[]) {
 }
 
 
-int main() {
+void runEDD() {
     total_order = readOrders(orders_read);  // read orders from file
 
     int last_arrival_date = orders_read[total_order - 1].arrival_date;
@@ -64,7 +63,6 @@ int main() {
     Order queue[ORDER_SIZE];
     
     int queue_length = 0;
-    int count_assigned = 0;
     int orders_unfinished = 0;
     
     int quantity;
@@ -76,8 +74,8 @@ int main() {
     
     // reset queue everyday
     while (day_now <= last_arrival_date) {
-        queue_length = edd_queue(orders_read, queue, queue_length, day_now);
-        queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
+        queue_length = edd_queue(orders_read, queue, queue_length, day_now);    // update queue
+        queue_length = overdue(queue, unfinished, queue_length, day_now);       // remove overdue from queue
         
         order_now = queue[0];
         orders_unfinished = order_now.quantity;
@@ -85,7 +83,7 @@ int main() {
 
         int plant_filled[3] = {0, 0, 0};
         
-        for (int count_assigned = 0; count_assigned < 3; count_assigned++) {
+        for (int assigned = 0; assigned < 3; assigned++) {
             if (orders_unfinished == 0) {
                 order_now = queue[0];
                 
@@ -95,7 +93,7 @@ int main() {
                 orders_unfinished = order_now.quantity;
                 queue_length = removeOrder(0, queue, queue_length);
             }
-                        
+            
             // assigning the order to the different plants
             if ((count_filled(plant_filled) >= 2 || orders_unfinished <= plants_limit[0]) && (plant_filled[0] == 0)) {
                 plantX[day_now] = order_now;
@@ -145,7 +143,6 @@ int main() {
                 
                 plant_filled[2] = -1;
             }
-            
         }
 
         if (orders_unfinished > 0) {
@@ -167,19 +164,19 @@ int main() {
         day_now++;
     }
     
+    total_days = day_now;
+    
+    generateProduced(day_now);
     generateFinished(orders_read, unfinished, day_now);
     
-    printf("finished orders: %d\n", num_finished);
-    printf("unfinished orders: %d\n", num_unfinished);
-    
+    /*
     printSchedule('F', num_finished, finished);
     printSchedule('U', num_unfinished, unfinished);
     
     printSchedule(plants_code[0], day_now, plantX);
     printSchedule(plants_code[1], day_now, plantY);
     printSchedule(plants_code[2], day_now, plantZ);
-    
-    return 0;
+     */
 }
 
 

@@ -101,7 +101,7 @@ bool isValidDate(Date d) {
 
 // --------------------------------------------------------------------------------
 
-bool isBefore(Date from, Date to, bool overlap) {
+bool isBefore(Date from, Date to, bool overlap) {   // overlap true : same day = true
     if (to.year < from.year)
         return false;
     
@@ -126,7 +126,7 @@ bool isBefore(Date from, Date to, bool overlap) {
 // --------------------------------------------------------------------------------
 
 int dateToDays(Date from, Date to) {
-    if (isBefore(from, to, false))  // if to is before from, return -1;
+    if (isBefore(to, from, false))   // if to is before from
         return -1;
     
     int difference = 0;

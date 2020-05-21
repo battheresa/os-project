@@ -5,7 +5,7 @@
 
 #include "utility.c"
 #include "inputModule.c"
-//#include "scheduleModule.c"
+#include "scheduleModule.c"
 #include "outputModule.c"
 
 void pleaseEnter(char str[]) {
@@ -35,8 +35,7 @@ int main() {
             substring(instruction, date1, 0, index);                        // extract first date
             substring(instruction, date2, index + 1, strlen(instruction));  // extract second date
             
-            duration = addPERIOD(date1, date2);
-            //printf("duration from %s to %s = %d days\n", date1, date2, duration);
+            addPERIOD(date1, date2);
         }
         else if (strcmp(command, "addORDER") == 0) {
             addORDER(instruction, arrival_time);
@@ -52,7 +51,7 @@ int main() {
             index = indexOf(instruction, ' ', 0, strlen(instruction));
             substring(instruction, algorithm, 0, index);    // extract algorithm name
             
-            printf("runPLS runs algorithm %s\n", algorithm);
+            runPLS(algorithm);
             arrival_time++;
         }
         else if (strcmp(command, "printREPORT") == 0) {
@@ -61,11 +60,8 @@ int main() {
             index = indexOf(instruction, ' ', 0, strlen(instruction));
             substring(instruction, filename, 0, index);     // extract report file name
             
-            printf("printREPORT print report to %s\n", filename);
-            printREPORT(instruction);
-            
+            printREPORT(filename);
             arrival_time++;
-            
         }
         
         index = indexOf(instruction, '|', 0, strlen(instruction)); // find index of pipe
