@@ -40,21 +40,21 @@ Order null_order = {-1, 0, "null", 0, "null", "null"};
 // --------------------------------------------------------------------------------
 
 // add order at index
-int addOrder(int index, Order order_now, Order queue[], int queue_length) {
-    for (int i = queue_length; i > index; i--)
-        queue[i] = queue[i - 1];
+int addOrder(int index, Order this_order, Order array[], int length) {
+    for (int i = length; i > index; i--)
+        array[i] = array[i - 1];
     
-    queue[index] = order_now;
-    return queue_length + 1;
+    array[index] = this_order;
+    return length + 1;
 }
 
 // remove order at index
-int removeOrder(int index, Order queue[], int queue_length) {
-    for (int i = index; i < queue_length - 1; i++)
-        queue[i] = queue[i + 1];
+int removeOrder(int index, Order array[], int length) {
+    for (int i = index; i < length - 1; i++)
+        array[i] = array[i + 1];
     
-    queue[queue_length - 1] = null_order;
-    return queue_length - 1;
+    array[length - 1] = null_order;
+    return length - 1;
 }
 
 // --------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ int readOrders(Order orders_read[]) {
         temp[i] = malloc(sizeof(char) * SUB_LENGTH);
     
     while (fgets(buf_read, CMD_LENGTH, in_file)) {  // while not EOF
-        buf_read[strlen(buf_read) - 1] = 0;     // remove new line from temp
+        buf_read[strlen(buf_read) - 1] = 0;         // remove new line from temp
         
         split(buf_read, temp, " ");
         
@@ -116,19 +116,20 @@ void printSchedule(char plant, int num, Order schedule[]) {
 
 // --------------------------------------------------------------------------------
 
-int overdue(Order queue[], Order unfinished[], int queue_length, int day_now) {
+int overdue(Order queue[], Order unfinished[], int length, int day_now) {
     Date due_now, today = daysToDate(day_now);
     
-    for (int i = 0; i < queue_length; i++) {
+    for (int i = 0; i < length; i++) {
         due_now = constructDate(queue[i].due_date);
         
-        if (!isBefore(today, due_now, false)) {   // if order due today or overdue
-            removeOrder(i, queue, queue_length);
+        if (!isBefore(today, due_now, false)) {                     // if order due today or overdue
+            length = addOrder(0, queue[i], unfinished, length);     // add overdued order to unfinished
+            length = removeOrder(i, queue, length);                 // remove overdued queue to unfinished array
             printf("Order at %d removed...", i);
         }
     }
     
-    return queue_length;
+    return length;
 }
 
 // --------------------------------------------------------------------------------
@@ -166,20 +167,20 @@ bool compareOrder(Order a, Order b) {
 }
 
 // check is the order is in unfinished array
-bool isUnfinished(Order check, Order unfinished[]) {
+bool isUnfinished(Order this_order, Order unfinished[]) {
     for (int i = 0; i < num_unfinished; i++)
-        if (compareOrder(check, unfinished[i]))
+        if (compareOrder(this_order, unfinished[i]))
             return true;
     
     return false;
 }
 
 // find the finished date
-int findLast(Order now, int length) {
+int findLast(Order this_order, int length) {
     int last = 0;
     
     for (int i = 0; i < length; i++)
-        if (compareOrder(now, plantX[i]) || compareOrder(now, plantY[i]) || compareOrder(now, plantZ[i]))
+        if (compareOrder(this_order, plantX[i]) || compareOrder(this_order, plantY[i]) || compareOrder(this_order, plantZ[i]))
             last = i;
     
     return last;
