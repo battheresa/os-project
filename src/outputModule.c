@@ -55,7 +55,7 @@ void writeSchedule(char *data[], char period[], int limits[], int length) {
                 fprintf(report_file, "\n%s\n\n", thin_line);
             
             fprintf(report_file, "Plant %c (%d per day):\n\n", current, limits[plant_now++]);
-            fprintf(report_file, "Date\t\t\tOrder Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
+            fprintf(report_file, "Date\t\t\t\tOrder Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
         }
     }
 }
