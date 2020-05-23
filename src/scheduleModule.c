@@ -7,27 +7,29 @@
 
 #include "scheduleUtility.c"
 #include "scheduleEDD.c"
-//#include "scheduleSJF.c"  // TODO: remove comment when SJF is done
+#include "scheduleSJF.c"
 
 #define READ 0
 #define WRITE 1
-#define ALGORITHM 1     // TODO: change to 2 when SJF is done
+#define ALGORITHM 2
 
 char buf_read[ORD_LENGTH];
 char buf_write[ORD_LENGTH];
 
 
 // format schedule and write back to parent
-void convertSchedule(Order ord[], char indicator, int length, int pipe_w) {
+void convertSchedule(Order ord[], char indicator, int length, int pipe) {
     for (int i = 0; i < length; i++) {
         if (ord[i].quantity == -1) {
             sprintf(buf_write, "%c NA", indicator);
-            write(pipe_w, buf_write, ORD_LENGTH);
+            write(pipe, buf_write, ORD_LENGTH);
             continue;
         }
         
         sprintf(buf_write, "%c %s %s %d %s", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, ord[i].due_date);
-        write(pipe_w, buf_write, ORD_LENGTH);
+        write(pipe, buf_write, ORD_LENGTH);
+        
+        printf("%d = %s\n", i, buf_write);
     }
 }
 
@@ -98,11 +100,9 @@ void writeRaw(char algthm[], char *data_edd[], char *data_sjf[], int length) {
     for (int i = 0; i < plants_num + 1; i++)
         fprintf(file, "%s\n", data_edd[i]);
     
-    // write performance of SJF // TODO: remove comment when SJF is done
-    /*
+    // write performance of SJF
     for (int i = 0; i < plants_num + 1; i++)
         fprintf(file, "%s\n", data_sjf[i]);
-    */
     
     // write schedule of the chosen algorithm
     if (strcmp(algthm, "EDD") == 0)
@@ -141,12 +141,13 @@ void runPLS(char algthm[]) {
             close(fd_P[i][WRITE]);  // close write from parent
             close(fd_C[i][READ]);   // close read from child
             
-            if (i == 0) {
+            if (i == 0)
                 runEDD();
-            }
-            else {
-                // TODO: run schedule SJF
-            }
+            else
+                runSJF();
+            
+            sprintf(buf_write, "%d", total_order);
+            write(fd_C[i][WRITE], buf_write,  ORD_LENGTH);
             
             // write performance of each plant to parent
             int numerator = 0, denominator = 0, buf_int;
@@ -157,9 +158,7 @@ void runPLS(char algthm[]) {
             while (true) {
                 read(fd_P[i][READ], buf_read, ORD_LENGTH);  // read from child
                 buf_read[strlen(buf_read)] = 0;    // add EOF
-                
-                //printf("child: %s\n", buf_read);
-                
+                                
                 if (strcmp(buf_read, "exit") == 0)
                     break;
                 
@@ -183,8 +182,9 @@ void runPLS(char algthm[]) {
                     convertAccpeted(finished, 'A', num_finished, fd_C[i][WRITE]);
                     convertRejected(unfinished, 'R', num_unfinished, fd_C[i][WRITE]);
                 }
-                else
+                else {
                     write(fd_C[i][WRITE], "done", ORD_LENGTH);
+                }
             }
             
             close(fd_P[i][READ]);   // close read from parent
@@ -206,8 +206,13 @@ void runPLS(char algthm[]) {
         read(fd_C[i][READ], buf_read, ORD_LENGTH);
         buf_read[strlen(buf_read)] = 0;
         
+        total_order = atoi(buf_read);
+        
+        read(fd_C[i][READ], buf_read, ORD_LENGTH);
+        buf_read[strlen(buf_read)] = 0;
+        
         total_days = atoi(buf_read);
-        lines = (total_days * (plants_num + 2)) + ((plants_num + 1) * ALGORITHM) + 3;
+        lines = (total_days * plants_num) + (plants_num + 1) + total_order;
         
         for (int j = 0; j < lines; j++) {
             if (i == 0)

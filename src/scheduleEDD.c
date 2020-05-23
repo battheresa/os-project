@@ -41,18 +41,6 @@ int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now)
 }
 
 
-// count plants filled
-int count_filled(int plant_filled[]) {
-    int count = 0;
-    
-    for (int i = 0; i < 3; i++)
-        if (plant_filled[i] == -1)
-            count++;
-    
-    return count;
-}
-
-
 void runEDD() {
     total_order = readOrders(orders_read);  // read orders from file
 

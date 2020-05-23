@@ -102,8 +102,7 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
     }
     fprintf(report_file, "Overall utilization\t\t\t\t\t\t\t\t%s\n", perfmn_edd[length]);
     
-    /*
-    fprintf(report_file, "\n%s\n\n", thin_line);    // TODO: remove comments when SJF is done
+    fprintf(report_file, "\n%s\n\n", thin_line);
     
     reset();
     fprintf(report_file, "Algorithm SJF (Shortest Jod First):\n\n");
@@ -115,7 +114,7 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
         fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s\n", temp_out[3]);
     }
     fprintf(report_file, "Overall utilization\t\t\t\t\t\t\t\t%s\n", perfmn_edd[length]);
-    */
+
 }
 
 
@@ -184,13 +183,11 @@ void printREPORT(char filename[]) {
         perfmn_edd[i][strlen(perfmn_edd[i])] = 0;
     }
     
-    // read performance of each plant of SJF    // TODO: remove comments when SJF is done
-    /*
+    // read performance of each plant of SJF
     for (int i = 0; i < num_plants + 1; i++) {
         fgets(perfmn_sjf[i], ORD_LENGTH, raw_file);
         perfmn_sjf[i][strlen(perfmn_sjf[i])] = 0;
     }
-    */
     
     // read the rest of the file
     while (fgets(buf_read, ORD_LENGTH, raw_file)) {

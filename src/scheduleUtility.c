@@ -196,3 +196,16 @@ void generateFinished(Order orders_read[], Order unfinished[], int length) {
         }
     }
 }
+
+// --------------------------------------------------------------------------------
+
+// count plants filled
+int count_filled(int plant_filled[]) {
+    int count = 0;
+    
+    for (int i = 0; i < 3; i++)
+        if (plant_filled[i] == -1)
+            count++;
+    
+    return count;
+}
