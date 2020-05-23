@@ -122,10 +122,9 @@ int overdue(Order queue[], Order unfinished[], int length, int day_now) {
     for (int i = 0; i < length; i++) {
         due_now = constructDate(queue[i].due_date);
         
-        if (!isBefore(today, due_now, false)) {                     // if order due today or overdue
-            length = addOrder(0, queue[i], unfinished, length);     // add overdued order to unfinished
-            length = removeOrder(i, queue, length);                 // remove overdued queue to unfinished array
-            printf("Order at %d removed...", i);
+        if (!isBefore(today, due_now, false)) {     // if order due today or overdue
+            num_unfinished = addOrder(0, queue[i], unfinished, num_unfinished); // add order to unfinished
+            length = removeOrder(i, queue, length);     // remove order from queue
         }
     }
     

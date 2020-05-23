@@ -167,7 +167,7 @@ void runEDD() {
     printSchedule(plants_code[0], day_now, plantX);
     printSchedule(plants_code[1], day_now, plantY);
     printSchedule(plants_code[2], day_now, plantZ);
-     */
+    */
 }
 
 

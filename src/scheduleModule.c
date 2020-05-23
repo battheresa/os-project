@@ -196,7 +196,7 @@ void runPLS(char algthm[]) {
         }
     }
 
-    int total_days, lines;
+    int total_days, lines, max_lines = 0;
     int num_edd = 0, num_sjf = 0;
     char *data_edd[ORD_LENGTH], *data_sjf[ORD_LENGTH];
     
@@ -211,6 +211,7 @@ void runPLS(char algthm[]) {
         
         total_days = atoi(buf_read);
         lines = (total_days * plants_num) + (plants_num + 1) + total_order;
+        max_lines = (lines > max_lines) ? lines : max_lines;
         
         for (int j = 0; j < lines; j++) {
             if (i == 0)
@@ -244,7 +245,7 @@ void runPLS(char algthm[]) {
         write(fd_P[i][WRITE], "exit", ORD_LENGTH);
     }
     
-    writeRaw(algthm, data_edd, data_sjf, lines);
+    writeRaw(algthm, data_edd, data_sjf, max_lines);
     
     for (int i = 0; i < ALGORITHM; i++) {
         close(fd_P[i][WRITE]);  // close write from parent
