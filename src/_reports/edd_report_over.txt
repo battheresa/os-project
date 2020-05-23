@@ -1,0 +1,134 @@
+Report of EDD Scheduling Algorithm
+
+==========================================================================================
+
+Schedule Report
+Period from 2020-01-01 to 2020-04-01
+
+
+Plant X (300 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_A			300				2020-01-05
+2020-01-02			P_001				Product_A			300				2020-01-10
+2020-01-03			P_003				Product_B			100				2020-01-10
+2020-01-04			P_003				Product_C			200				2020-01-11
+2020-01-05			P_003				Product_E			300				2020-01-13
+2020-01-06			P_003				Product_D			100				2020-01-20
+2020-01-07			P_003				Product_D			150				2020-02-11
+2020-01-08			P_003				Product_B			200				2020-02-13
+2020-01-09			P_003				Product_F			100				2020-02-14
+2020-01-10			NA					NA					NA				NA
+
+------------------------------------------------------------------------------------------
+
+Plant Y (400 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_A			300				2020-01-05
+2020-01-02			P_003				Product_D			400				2020-01-05
+2020-01-03			P_003				Product_B			400				2020-01-10
+2020-01-04			P_003				Product_C			300				2020-01-12
+2020-01-05			P_003				Product_A			400				2020-01-14
+2020-01-06			P_003				Product_D			400				2020-01-20
+2020-01-07			P_003				Product_D			200				2020-02-11
+2020-01-08			P_003				Product_F			400				2020-02-12
+2020-01-09			P_003				Product_C			400				2020-02-16
+2020-01-10			NA					NA					NA				NA
+
+------------------------------------------------------------------------------------------
+
+Plant Z (500 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_B			400				2020-01-10
+2020-01-02			P_003				Product_C			400				2020-01-08
+2020-01-03			P_003				Product_E			500				2020-01-09
+2020-01-04			P_001				Product_C			400				2020-01-12
+2020-01-05			P_003				Product_F			250				2020-01-15
+2020-01-06			P_003				Product_E			500				2020-01-15
+2020-01-07			P_003				Product_E			200				2020-02-12
+2020-01-08			P_003				Product_B			450				2020-02-12
+2020-01-09			P_003				Product_C			100				2020-02-16
+2020-01-10			P_003				Product_A			500				2020-02-17
+
+==========================================================================================
+
+Analysis Report
+
+
+Orders Accepted (total of 25 orders):
+
+Order Number		Product Name		Quantity		Arrival			Finish			Duration
+P_001				Product_A			300				2020-01-01		2020-01-01		0
+P_001				Product_B			400				2020-01-01		2020-01-01		0
+P_001				Product_A			300				2020-01-01		2020-01-01		0
+P_001				Product_C			400				2020-01-01		2020-01-04		3
+P_003				Product_D			400				2020-01-02		2020-01-02		0
+P_003				Product_E			500				2020-01-02		2020-01-06		4
+P_003				Product_C			400				2020-01-02		2020-01-02		0
+P_001				Product_A			300				2020-01-02		2020-01-02		0
+P_003				Product_E			500				2020-01-03		2020-01-03		0
+P_003				Product_D			500				2020-01-03		2020-01-06		3
+P_003				Product_B			500				2020-01-03		2020-01-03		0
+P_003				Product_C			200				2020-01-03		2020-01-04		1
+P_003				Product_E			300				2020-01-03		2020-01-05		2
+P_003				Product_F			250				2020-01-04		2020-01-05		1
+P_003				Product_A			400				2020-01-04		2020-01-05		1
+P_003				Product_C			300				2020-01-04		2020-01-04		0
+P_003				Product_D			200				2020-01-04		2020-01-07		3
+P_003				Product_B			200				2020-01-04		2020-01-08		4
+P_003				Product_F			400				2020-01-04		2020-01-08		4
+P_003				Product_A			500				2020-01-04		2020-01-10		6
+P_003				Product_D			150				2020-01-06		2020-01-07		1
+P_003				Product_B			450				2020-01-06		2020-01-08		2
+P_003				Product_C			500				2020-01-06		2020-01-09		3
+P_003				Product_F			100				2020-01-06		2020-01-09		3
+P_003				Product_E			200				2020-01-06		2020-01-07		1
+
+------------------------------------------------------------------------------------------
+
+Orders Rejected (total of 0 orders):
+
+Order Number		Product Name		Quantity		Due Date
+
+==========================================================================================
+
+Performance Report
+
+
+Algorithm EDD (Earliest Due Date):
+
+Plant X		Number of days in use				9 days
+			Number of products produced			1750 in total
+			Utilization of the plant			58.33
+
+Plant Y		Number of days in use				9 days
+			Number of products produced			3200 in total
+			Utilization of the plant			80.00
+
+Plant Z		Number of days in use				10 days
+			Number of products produced			3700 in total
+			Utilization of the plant			74.00
+
+Overall utilization								72.08
+
+
+------------------------------------------------------------------------------------------
+
+Algorithm SJF (Shortest Jod First):
+
+Plant X		Number of days in use				0 days
+			Number of products produced			1700 in total
+			Utilization of the plant			62.96
+
+Plant Y		Number of days in use				0 days
+			Number of products produced			2950 in total
+			Utilization of the plant			81.94
+
+Plant Z		Number of days in use				0 days
+			Number of products produced			3500 in total
+			Utilization of the plant			77.78
+
+Overall utilization								72.08
+

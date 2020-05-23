@@ -1,0 +1,185 @@
+Report of EDD Scheduling Algorithm
+
+==========================================================================================
+
+Schedule Report
+Period from 2020-01-01 to 2020-04-01
+
+
+Plant X (300 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_A			100				2020-03-05
+2020-01-02			P_001				Product_A			300				2020-03-05
+2020-01-03			P_003				Product_D			300				2020-02-05
+2020-01-04			P_003				Product_D			200				2020-02-05
+2020-01-05			P_003				Product_B			300				2020-02-10
+2020-01-06			P_003				Product_F			300				2020-01-15
+2020-01-07			P_003				Product_D			300				2020-01-11
+2020-01-08			P_003				Product_D			300				2020-01-11
+2020-01-09			P_003				Product_F			300				2020-01-12
+2020-01-10			P_003				Product_D			300				2020-01-11
+2020-01-11			P_003				Product_E			300				2020-01-12
+2020-01-12			P_003				Product_B			300				2020-01-12
+2020-01-13			P_003				Product_C			300				2020-01-12
+2020-01-14			P_003				Product_F			100				2020-01-14
+2020-01-15			P_003				Product_C			300				2020-01-16
+2020-01-16			P_003				Product_A			300				2020-01-17
+2020-01-17			P_003				Product_B			200				2020-02-10
+2020-01-18			P_003				Product_C			300				2020-02-11
+2020-01-19			P_003				Product_E			300				2020-02-15
+2020-01-20			P_003				Product_E			300				2020-02-15
+2020-01-21			P_003				Product_D			300				2020-02-20
+2020-01-22			P_003				Product_D			100				2020-02-20
+2020-01-23			P_003				Product_E			100				2020-03-09
+2020-01-24			P_001				Product_B			200				2020-03-10
+2020-01-25			P_001				Product_C			300				2020-03-12
+2020-01-26			P_001				Product_C			100				2020-03-12
+2020-01-27			NA					NA					NA				NA
+
+------------------------------------------------------------------------------------------
+
+Plant Y (400 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_A			400				2020-03-05
+2020-01-02			P_001				Product_A			400				2020-03-05
+2020-01-03			P_003				Product_D			400				2020-02-05
+2020-01-04			P_003				Product_C			400				2020-02-08
+2020-01-05			P_003				Product_C			350				2020-02-08
+2020-01-06			P_003				Product_F			400				2020-01-15
+2020-01-07			P_003				Product_D			400				2020-01-11
+2020-01-08			P_003				Product_F			400				2020-01-12
+2020-01-09			P_003				Product_F			400				2020-01-12
+2020-01-10			P_003				Product_D			400				2020-01-11
+2020-01-11			P_003				Product_E			400				2020-01-12
+2020-01-12			P_003				Product_B			400				2020-01-12
+2020-01-13			P_003				Product_C			400				2020-01-12
+2020-01-14			P_003				Product_F			400				2020-01-14
+2020-01-15			P_003				Product_C			400				2020-01-16
+2020-01-16			P_003				Product_A			400				2020-01-17
+2020-01-17			P_001				Product_A			400				2020-02-10
+2020-01-18			P_001				Product_A			400				2020-02-10
+2020-01-19			P_003				Product_C			400				2020-02-11
+2020-01-20			P_003				Product_E			400				2020-02-15
+2020-01-21			P_003				Product_D			400				2020-02-20
+2020-01-22			P_003				Product_E			400				2020-03-09
+2020-01-23			P_001				Product_B			400				2020-03-10
+2020-01-24			P_001				Product_B			400				2020-03-10
+2020-01-25			P_001				Product_C			400				2020-03-12
+2020-01-26			P_003				Product_E			400				2020-03-13
+2020-01-27			P_003				Product_E			400				2020-03-13
+
+------------------------------------------------------------------------------------------
+
+Plant Z (500 per day):
+
+Date				Order Number		Product Name		Quantity		Due Date
+2020-01-01			P_001				Product_A			500				2020-03-05
+2020-01-02			P_001				Product_A			500				2020-03-05
+2020-01-03			P_003				Product_D			500				2020-02-05
+2020-01-04			P_003				Product_C			500				2020-02-08
+2020-01-05			P_003				Product_B			500				2020-02-10
+2020-01-06			P_003				Product_F			500				2020-01-15
+2020-01-07			P_003				Product_D			500				2020-01-11
+2020-01-08			P_003				Product_D			500				2020-01-11
+2020-01-09			P_003				Product_F			500				2020-01-12
+2020-01-10			P_003				Product_D			500				2020-01-11
+2020-01-11			P_003				Product_E			500				2020-01-12
+2020-01-12			P_003				Product_B			500				2020-01-12
+2020-01-13			P_003				Product_C			500				2020-01-12
+2020-01-14			P_003				Product_F			500				2020-01-14
+2020-01-15			P_003				Product_C			500				2020-01-16
+2020-01-16			P_003				Product_A			500				2020-01-17
+2020-01-17			P_003				Product_B			500				2020-02-10
+2020-01-18			P_001				Product_A			500				2020-02-10
+2020-01-19			P_003				Product_C			500				2020-02-11
+2020-01-20			P_003				Product_E			500				2020-02-15
+2020-01-21			P_003				Product_D			500				2020-02-20
+2020-01-22			P_003				Product_E			500				2020-03-09
+2020-01-23			P_003				Product_E			500				2020-03-09
+2020-01-24			P_001				Product_B			500				2020-03-10
+2020-01-25			P_001				Product_C			500				2020-03-12
+2020-01-26			P_003				Product_E			500				2020-03-13
+2020-01-27			NA					NA					NA				NA
+
+==========================================================================================
+
+Analysis Report
+
+
+Orders Accepted (total of 15 orders):
+
+Order Number		Product Name		Quantity		Arrival			Finish			Duration
+P_001				Product_A			1000			2020-01-01		2020-01-01		0
+P_001				Product_B			1500			2020-01-02		2020-01-24		22
+P_001				Product_A			1200			2020-01-02		2020-01-02		0
+P_001				Product_C			1300			2020-01-02		2020-01-26		24
+P_003				Product_D			1400			2020-01-03		2020-01-04		1
+P_003				Product_E			1500			2020-01-03		2020-01-20		17
+P_003				Product_C			1250			2020-01-04		2020-01-05		1
+P_001				Product_A			1300			2020-01-04		2020-01-18		14
+P_003				Product_E			1500			2020-01-05		2020-01-23		18
+P_003				Product_D			1300			2020-01-05		2020-01-22		17
+P_003				Product_B			1500			2020-01-05		2020-01-17		12
+P_003				Product_C			1200			2020-01-06		2020-01-19		13
+P_003				Product_E			1300			2020-01-06		2020-01-27		21
+P_003				Product_D			2000			2020-01-07		2020-01-08		1
+P_003				Product_F			1000			2020-01-11		2020-01-14		3
+
+------------------------------------------------------------------------------------------
+
+Orders Rejected (total of 10 orders):
+
+Order Number		Product Name		Quantity		Due Date
+P_003				Product_A			800				2020-01-17
+P_003				Product_C			3800			2020-01-16
+P_003				Product_F			1300			2020-01-15
+P_003				Product_A			1000			2020-01-14
+P_003				Product_C			1800			2020-01-12
+P_003				Product_B			2000			2020-01-13
+P_003				Product_B			3300			2020-01-12
+P_003				Product_F			2400			2020-01-12
+P_003				Product_E			800				2020-01-12
+P_003				Product_D			300				2020-01-11
+
+==========================================================================================
+
+Performance Report
+
+
+Algorithm EDD (Earliest Due Date):
+
+Plant X		Number of days in use				26 days
+			Number of products produced			6500 in total
+			Utilization of the plant			80.25
+
+Plant Y		Number of days in use				27 days
+			Number of products produced			10750 in total
+			Utilization of the plant			99.54
+
+Plant Z		Number of days in use				26 days
+			Number of products produced			13000 in total
+			Utilization of the plant			96.30
+
+Overall utilization								93.36
+
+
+------------------------------------------------------------------------------------------
+
+Algorithm SJF (Shortest Jod First):
+
+Plant X		Number of days in use				0 days
+			Number of products produced			4000 in total
+			Utilization of the plant			78.43
+
+Plant Y		Number of days in use				0 days
+			Number of products produced			6750 in total
+			Utilization of the plant			99.26
+
+Plant Z		Number of days in use				0 days
+			Number of products produced			8500 in total
+			Utilization of the plant			100.00
+
+Overall utilization								93.36
+
