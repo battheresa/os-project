@@ -43,9 +43,6 @@ int edd_queue(Order orders_read[], Order queue[], int queue_length, int day_now)
 
 void runEDD() {
     total_order = readOrders(orders_read);  // read orders from file
-
-    int last_arrival_date = orders_read[total_order - 1].arrival_date;
-    int day_now = 0;
     
     Order order_now;
     Order queue[ORDER_SIZE];
@@ -60,11 +57,14 @@ void runEDD() {
     char order_number[SUB_LENGTH];
     char product_name[SUB_LENGTH];
     
+    int last_day = dateToDays(start_period, end_period);
+    int day_now = 0;
+    
+    queue_length = edd_queue(orders_read, queue, queue_length, day_now);    // update queue
+    queue_length = overdue(queue, unfinished, queue_length, day_now);       // remove overdue from queue
+    
     // reset queue everyday
-    while (day_now <= last_arrival_date) {
-        queue_length = edd_queue(orders_read, queue, queue_length, day_now);    // update queue
-        queue_length = overdue(queue, unfinished, queue_length, day_now);       // remove overdue from queue
-        
+    while (day_now < last_day && queue_length != 0) {
         order_now = queue[0];
         orders_unfinished = order_now.quantity;
         queue_length = removeOrder(0, queue, queue_length);
@@ -150,6 +150,9 @@ void runEDD() {
         }
         
         day_now++;
+        
+        queue_length = edd_queue(orders_read, queue, queue_length, day_now);    // update queue
+        queue_length = overdue(queue, unfinished, queue_length, day_now);       // remove overdue from queue
     }
     
     total_days = day_now;

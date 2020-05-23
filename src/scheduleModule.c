@@ -28,8 +28,6 @@ void convertSchedule(Order ord[], char indicator, int length, int pipe) {
         
         sprintf(buf_write, "%c %s %s %d %s", indicator, ord[i].order_number, ord[i].product_name, ord[i].quantity, ord[i].due_date);
         write(pipe, buf_write, ORD_LENGTH);
-        
-        printf("%d = %s\n", i, buf_write);
     }
 }
 

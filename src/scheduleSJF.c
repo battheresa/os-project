@@ -45,14 +45,15 @@ void runSJF() {
     int order_amount = 0;
     int orders_unfinished = 0;
     
-    int last_arrival_date = orders_read[total_order - 1].arrival_date;
+    int last_day = dateToDays(start_period, end_period);
     int day_now = 0;
     
+    // get initial queue
+    queue_length = sjf_queue(orders_read, queue, queue_length, day_now);
+    queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
+    
     // reset queue everyday
-    while (day_now <= last_arrival_date) {
-        queue_length = sjf_queue(orders_read, queue, queue_length, day_now);
-        queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
-        
+    while (day_now < last_day && queue_length != 0) {
         order_now = queue[0]; //order struct
         orders_unfinished = order_now.quantity; //order struct quantity
         queue_length = removeOrder(0, queue, queue_length);
@@ -130,6 +131,9 @@ void runSJF() {
         }
         
         day_now++;
+        
+        queue_length = sjf_queue(orders_read, queue, queue_length, day_now);
+        queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
     }
     
     total_days = day_now;
