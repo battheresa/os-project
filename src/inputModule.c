@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 FILE *in_file, *out_file, *invalid_file;
-char temp_in[SUB_LENGTH];
 
 // --------------------------------------------------------------------------------
 
@@ -29,12 +28,13 @@ void addORDER(char data[], int time) {
     }
     
     // parse data into seperate items if needed
-    char temp_in[SUB_LENGTH];
+    char temp[SUB_LENGTH];
     int index = indexOf(data, ' ', 0, strlen(data));
-    substring(data, temp_in, index + 1, index + 11);
+    substring(data, temp, index + 1, index + 11);
     
-    Date date = constructDate(temp_in);
-    if (isBefore(start_period, date, true))
+    Date date = constructDate(temp);
+    
+    if (isBefore(date, start_period, true) || isBefore(end_period, date, true))
         fprintf(invalid_file, "%s\n", data);
     else
         fprintf(out_file, "%d %s\n", time, data);
@@ -56,9 +56,12 @@ void addBATCH(char batch_file[], int time) {
         exit(1);
     }
     
-    while (fgets(temp_in, CMD_LENGTH, in_file)) {  // while not EOF
-        temp_in[strlen(temp_in) - 1] = 0;     // remove new line from temp
-        addORDER(temp_in, time);
+    char temp[SUB_LENGTH];
+    while (fgets(temp, CMD_LENGTH, in_file)) {  // while not EOF
+        if (temp[strlen(temp) - 1] == '\n')
+            temp[strlen(temp) - 1] = 0;     // remove new line from temp
+        
+        addORDER(temp, time);
     }
     
     fclose(in_file);
