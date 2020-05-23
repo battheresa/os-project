@@ -71,7 +71,11 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tArrival\t\t\tFinish\t\t\tDuration\n");
     for (int i = 0; i < length_acct; i++) {
         split(accepted[i], temp_out, " ");
-        fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t\t%s\t\t%s\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3], temp_out[4], temp_out[5]);
+        
+        if (strlen(temp_out[2]) < 4)
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t\t%s\t\t%s\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3], temp_out[4], temp_out[5]);
+        else
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\t\t%s\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3], temp_out[4], temp_out[5]);
     }
     
     fprintf(report_file, "\n%s\n\n", thin_line);
@@ -81,7 +85,11 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
     for (int i = 0; i < length_rejt; i++) {
         split(rejected[i], temp_out, " ");
-        fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
+        
+        if (strlen(temp_out[2]) < 4)
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
+        else
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
     }
 }
 
