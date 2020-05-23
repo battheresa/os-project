@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
+#include "scheduleUtility.c"    // move to scheduleModule.c later
+  
 // sort the orders
 void bubbleSort(Order arr[], int n) { 
     struct Order temp;
@@ -18,6 +18,16 @@ void bubbleSort(Order arr[], int n) {
     }
 } 
 
+// count plants filled
+int count_filled(int plant_filled[]) {
+    int count = 0;
+    
+    for (int i = 0; i < 3; i++)
+        if (plant_filled[i] == -1)
+            count++;
+    
+    return count;
+}
 
 // creates the queue
 int sjf_queue(Order orders_read[], Order queue[], int queue_length, int day_now) {
@@ -49,7 +59,7 @@ void runSJF() {
     int day_now = 0;
     
     // reset queue everyday
-    while (day_now <= last_arrival_date) {
+    while ((queue_length = sjf_queue(orders_read, queue, queue_length, day_now)) != 0){
         queue_length = sjf_queue(orders_read, queue, queue_length, day_now);
         queue_length = overdue(queue, unfinished, queue_length, day_now);   // remove overdue orders from queue
         
@@ -128,7 +138,21 @@ void runSJF() {
             if (plant_filled[2] == 0)
                 plantZ[day_now] = null_order;
         }
-        
+        if (orders_unfinished > 0) {
+            order_now.quantity = orders_unfinished;
+            printf("%d ",order_now.quantity);
+            queue_length = addOrder(0, order_now, queue, queue_length);
+        }
+        if (count_filled(plant_filled) <= 3) {
+            if (plant_filled[0] == 0)
+                plantX[day_now] = null_order;
+            
+            if (plant_filled[1] == 0)
+                plantY[day_now] = null_order;
+            
+            if (plant_filled[2] == 0)
+                plantZ[day_now] = null_order;
+        }
         day_now++;
     }
     
