@@ -69,7 +69,7 @@ void writeData(FILE *file, char *data[], int length) {
 
 
 // write to raw file
-void writeRaw(char algthm[], char *data_edd[], char *data_sjf[], int length) {
+void writeRaw(char algthm[], char *data_edd[], char *data_sjf[], int length[]) {
     FILE *file = fopen(raw_path, "w");
     char temp[MIN_LENGTH];
     
@@ -104,9 +104,9 @@ void writeRaw(char algthm[], char *data_edd[], char *data_sjf[], int length) {
     
     // write schedule of the chosen algorithm
     if (strcmp(algthm, "EDD") == 0)
-        writeData(file, data_edd, length);
+        writeData(file, data_edd, length[0]);
     else
-        writeData(file, data_sjf, length);
+        writeData(file, data_sjf, length[1]);
     
     // close file
     fclose(file);
@@ -196,7 +196,7 @@ void runPLS(char algthm[]) {
         }
     }
 
-    int total_days, lines, max_lines = 0;
+    int total_days, lines[ALGORITHM];
     int num_edd = 0, num_sjf = 0;
     char *data_edd[ORD_LENGTH], *data_sjf[ORD_LENGTH];
     
@@ -210,17 +210,16 @@ void runPLS(char algthm[]) {
         buf_read[strlen(buf_read)] = 0;
         
         total_days = atoi(buf_read);
-        lines = (total_days * plants_num) + (plants_num + 1) + total_order;
-        max_lines = (lines > max_lines) ? lines : max_lines;
+        lines[i] = (total_days * plants_num) + (plants_num + 1) + total_order;
         
-        for (int j = 0; j < lines; j++) {
+        for (int j = 0; j < lines[i]; j++) {
             if (i == 0)
                 data_edd[j] = malloc(sizeof(char) * ORD_LENGTH);
             else
                 data_sjf[j] = malloc(sizeof(char) * ORD_LENGTH);
         }
         
-        for (int count = 0; count < lines; count++) {
+        for (int count = 0; count < lines[i]; count++) {
             sprintf(buf_write, "%d", count);
             write(fd_P[i][WRITE], buf_write, ORD_LENGTH);
             
@@ -245,7 +244,7 @@ void runPLS(char algthm[]) {
         write(fd_P[i][WRITE], "exit", ORD_LENGTH);
     }
     
-    writeRaw(algthm, data_edd, data_sjf, max_lines);
+    writeRaw(algthm, data_edd, data_sjf, lines);
     
     for (int i = 0; i < ALGORITHM; i++) {
         close(fd_P[i][WRITE]);  // close write from parent

@@ -87,9 +87,9 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
         split(rejected[i], temp_out, " ");
         
         if (strlen(temp_out[2]) < 4)
-            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
         else
-            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
+            fprintf(report_file, "%s\t\t\t\t%s\t\t\t%s\t\t\t%s\n", temp_out[0], temp_out[1], temp_out[2], temp_out[3]);
     }
 }
 
