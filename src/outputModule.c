@@ -66,10 +66,10 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Analysis Report\n\n\n");
     
-    reset();
     fprintf(report_file, "Orders Accepted (total of %d orders):\n\n", length_acct);
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tArrival\t\t\tFinish\t\t\tDuration\n");
     for (int i = 0; i < length_acct; i++) {
+        reset();
         split(accepted[i], temp_out, " ");
         
         if (strlen(temp_out[2]) < 4)
@@ -80,10 +80,10 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
     
     fprintf(report_file, "\n%s\n\n", thin_line);
     
-    reset();
     fprintf(report_file, "Orders Rejected (total of %d orders):\n\n", length_rejt);
     fprintf(report_file, "Order Number\t\tProduct Name\t\tQuantity\t\tDue Date\n");
     for (int i = 0; i < length_rejt; i++) {
+        reset();
         split(rejected[i], temp_out, " ");
         
         if (strlen(temp_out[2]) < 4)
@@ -99,10 +99,11 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Performance Report\n\n\n");
     
-    reset();
     fprintf(report_file, "Algorithm EDD (Earliest Due Date):\n\n");
     for (int i = 0; i < length; i++) {
+        reset();
         split(perfmn_edd[i], temp_out, " ");
+        
         fprintf(report_file, "Plant %s", temp_out[0]);
         fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", temp_out[1]);
         fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", temp_out[2]);
@@ -112,11 +113,12 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
     
     fprintf(report_file, "\n%s\n\n", thin_line);
     
-    reset();
     fprintf(report_file, "Algorithm SJF (Shortest Jod First):\n\n");
     for (int i = 0; i < length; i++) {
+        reset();
         split(perfmn_sjf[i], temp_out, " ");
         fprintf(report_file, "Plant %s", temp_out[0]);
+        
         fprintf(report_file, "\t\tNumber of days in use\t\t\t\t%s days\n", temp_out[1]);
         fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", temp_out[2]);
         fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s\n", temp_out[3]);
