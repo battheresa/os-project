@@ -16,7 +16,7 @@ void bubbleSort(Order arr[], int n) {
             }
         }
     }
-} 
+}
 
 
 // creates the queue
