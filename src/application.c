@@ -62,9 +62,7 @@ int main() {
             
             index = indexOf(instruction, ' ', 0, strlen(instruction));
             substring(instruction, filename, 0, index);     // extract report file name
-            
-            printf("%s\n", filename);
-            
+                        
             printREPORT(filename);
             arrival_time++;
         }
