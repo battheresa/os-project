@@ -20,6 +20,14 @@ int main() {
     char command[CMD_LENGTH];
     int index, duration, arrival_time = 0;
     
+    FILE *out_file, *invalid_file;
+    
+    out_file = fopen(order_path, "w");  // remove everything in orders file
+    fclose(out_file);
+    
+    invalid_file = fopen(invalid_path, "w");  // remove everything in invalid file
+    fclose(invalid_file);
+    
     printf("\n~~ WELCOME TO PLS ~~\n");
     pleaseEnter(instruction);   // get instruction
     
