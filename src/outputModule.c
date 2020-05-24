@@ -95,7 +95,7 @@ void writeAnalysis(char *accepted[], char *rejected[], int length_acct, int leng
 
 
 // write performance to report file
-void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {    
+void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
     fprintf(report_file, "\n%s\n\n", thick_line);
     fprintf(report_file, "Performance Report\n\n\n");
     
@@ -124,7 +124,6 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
         fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s\n", temp_out[3]);
     }
     fprintf(report_file, "Overall utilization\t\t\t\t\t\t\t\t%s\n", perfmn_sjf[length]);
-
 }
 
 
@@ -150,8 +149,10 @@ void printREPORT(char filename[]) {
     char *rejected[ORD_LENGTH];
     
     // allocate space for orders in arrays
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 500; i++)
         schedule[i] = malloc(sizeof(char) * ORD_LENGTH);
+    
+    for (int i = 0; i < 200; i++) {
         accepted[i] = malloc(sizeof(char) * ORD_LENGTH);
         rejected[i] = malloc(sizeof(char) * ORD_LENGTH);
     }
