@@ -149,10 +149,8 @@ void printREPORT(char filename[]) {
     char *rejected[ORD_LENGTH];
     
     // allocate space for orders in arrays
-    for (int i = 0; i < 500; i++)
-        schedule[i] = malloc(sizeof(char) * ORD_LENGTH);
-    
     for (int i = 0; i < 200; i++) {
+        schedule[i] = malloc(sizeof(char) * ORD_LENGTH);
         accepted[i] = malloc(sizeof(char) * ORD_LENGTH);
         rejected[i] = malloc(sizeof(char) * ORD_LENGTH);
     }
