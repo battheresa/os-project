@@ -72,6 +72,8 @@ void runSJF() {
             
             if ((count_filled(plant_filled) >= 2 || orders_unfinished <= plants_limit[0]) && (plant_filled[0] == 0)) {
                 plantX[day_now] = order_now; //pass in the day_now struct to the plantX struct array
+                plantX[day_now].finish_date = day_now;
+                plants_days_use[0]++;
                 
                 if (orders_unfinished <= plants_limit[0]) {
                     plantX[day_now].quantity = orders_unfinished;
@@ -86,6 +88,8 @@ void runSJF() {
             }
             else if ((count_filled(plant_filled) >= 1 || orders_unfinished <= plants_limit[1]) && (plant_filled[1] == 0)) {
                 plantY[day_now] = order_now; //pass in the day_now struct to the plantY struct array
+                plantY[day_now].finish_date = day_now;
+                plants_days_use[1]++;
                 
                 if (orders_unfinished <= plants_limit[1]) {
                     plantY[day_now].quantity = orders_unfinished;
@@ -100,6 +104,8 @@ void runSJF() {
             }
             else {
                 plantZ[day_now] = order_now; //pass in the day_now struct to the plantZ struct array
+                plantZ[day_now].finish_date = day_now;
+                plants_days_use[2]++;
                 
                 if (orders_unfinished <= plants_limit[2]) {
                     plantZ[day_now].quantity = orders_unfinished;

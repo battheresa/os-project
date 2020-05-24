@@ -123,7 +123,7 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
         fprintf(report_file, "\t\t\tNumber of products produced\t\t\t%s in total\n", temp_out[2]);
         fprintf(report_file, "\t\t\tUtilization of the plant\t\t\t%s\n", temp_out[3]);
     }
-    fprintf(report_file, "Overall utilization\t\t\t\t\t\t\t\t%s\n", perfmn_edd[length]);
+    fprintf(report_file, "Overall utilization\t\t\t\t\t\t\t\t%s\n", perfmn_sjf[length]);
 
 }
 
