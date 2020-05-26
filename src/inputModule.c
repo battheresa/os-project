@@ -46,7 +46,7 @@ void addORDER(char data[], int time) {
 // --------------------------------------------------------------------------------
 
 void addBATCH(char batch_file[], int time) {
-    char batch_path[SUB_LENGTH] = "_resources/";
+    char batch_path[CMD_LENGTH] = "_resources/";
     strcat(batch_path, batch_file);
     
     in_file = fopen(batch_path, "r");   // open read file
@@ -56,7 +56,7 @@ void addBATCH(char batch_file[], int time) {
         exit(1);
     }
     
-    char temp[SUB_LENGTH];
+    char temp[CMD_LENGTH];
     while (fgets(temp, CMD_LENGTH, in_file)) {  // while not EOF
         if (temp[strlen(temp) - 1] == '\n')
             temp[strlen(temp) - 1] = 0;     // remove new line from temp
