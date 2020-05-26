@@ -128,7 +128,7 @@ void writePerformance(char *perfmn_edd[], char *perfmn_sjf[], int length) {
 
 
 void printREPORT(char filename[]) {
-    char report_path[CMD_LENGTH] = "_reports/";
+    char report_path[CMD_LENGTH] = "G09_Outputs/";
     strcat(report_path, filename);
         
     report_file = fopen(report_path, "w");
