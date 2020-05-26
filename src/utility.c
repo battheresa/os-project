@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MIN_LENGTH 10
-#define SUB_LENGTH 25
+#define SUB_LENGTH 30
 #define CMD_LENGTH 80
 #define ORD_LENGTH 200
 

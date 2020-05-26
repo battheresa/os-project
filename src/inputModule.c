@@ -34,7 +34,7 @@ void addORDER(char data[], int time) {
     
     Date date = constructDate(temp);
     
-    if (isBefore(date, start_period, true) || isBefore(end_period, date, true))
+    if (isBefore(date, start_period, false) || isBefore(end_period, date, false))
         fprintf(invalid_file, "%s\n", data);
     else
         fprintf(out_file, "%d %s\n", time, data);
@@ -46,7 +46,7 @@ void addORDER(char data[], int time) {
 // --------------------------------------------------------------------------------
 
 void addBATCH(char batch_file[], int time) {
-    char batch_path[CMD_LENGTH] = "_resources/";
+    char batch_path[SUB_LENGTH] = "_resources/";
     strcat(batch_path, batch_file);
     
     in_file = fopen(batch_path, "r");   // open read file
@@ -56,10 +56,15 @@ void addBATCH(char batch_file[], int time) {
         exit(1);
     }
     
+    int index;
     char temp[CMD_LENGTH];
+    
     while (fgets(temp, CMD_LENGTH, in_file)) {  // while not EOF
         if (temp[strlen(temp) - 1] == '\n')
             temp[strlen(temp) - 1] = 0;     // remove new line from temp
+        
+        index = indexOf(temp, ' ', 0, strlen(temp));  // find space in the temp string
+        substring(temp, temp, index + 1, strlen(temp));  // remove addORDER from temp string
         
         addORDER(temp, time);
     }
